@@ -40,8 +40,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       required this.deletCommentReply})
       : super(HomeState(
           currentState: CurrentAppState.INITIAL,
-          postList: [],
-          replayCommentList: [], replyedTo: null, comment: null, postListStream: StreamController<List<PostEntity>>.broadcast(),
+          postList: const [],
+          replayCommentList: const [], replyedTo: null, comment: null, postListStream: StreamController<List<PostEntity>>.broadcast(),
            postCommentListStream: StreamController<List<CommentsEntity>>.broadcast(),
         )) {
 

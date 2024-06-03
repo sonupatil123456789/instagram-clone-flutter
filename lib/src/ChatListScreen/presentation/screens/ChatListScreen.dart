@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:instagram_clone/components/cards/chat_card.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
-import 'package:instagram_clone/src/ChatListScreen/data/model/UserMessageListModel.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserMessageListEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
@@ -32,7 +30,7 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
   initialise(BuildContext context, bool refresh) async {
     userData = await context.read<AuthBloc>().getUserDetails(context, refresh);
     setState(() {});
-    final chatList = [...userData.following!, ...userData.followers!].toSet().toList();
+    final chatList = {...userData.following!, ...userData.followers!}.toList();
     context.read<ChatListBloc>().getFriendsChattingUserListStreamEvent(context,chatList  ?? []);
   }
 
@@ -92,7 +90,7 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
               ),
 
               Expanded(
-                child: Container(
+                child: SizedBox(
                   height: super.screenHeightPercentage(context, 80),
                   child: LiquidPullToRefresh(
                       showChildOpacityTransition: false,
@@ -103,7 +101,7 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
                           initialise(context , true);
                       },
 
-                    child:  Container(
+                    child:  SizedBox(
                     width: super.screenWidthPercentage(context, 100),
                     height: super.screenHeightPercentage(context, 70),
                     child: StreamBuilder(
@@ -119,7 +117,7 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
                         }
 
                         if (snapshot.connectionState ==ConnectionState.active) {
-                          if (snapshot.data?.length == 0) {
+                          if (snapshot.data!.isEmpty) {
                             return Container(
                               height: 500,
                               alignment: Alignment.center,

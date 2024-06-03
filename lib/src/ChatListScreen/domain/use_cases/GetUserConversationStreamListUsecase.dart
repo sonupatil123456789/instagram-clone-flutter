@@ -13,7 +13,7 @@ class GetUserConversationStreamListUsecase implements StreamedUseCase<Stream<Lis
     Stream<List<UserChatMessageEntity>> call(GetUserConversationStreamListParams params , BuildContext context)  {
     try {
       return repository.getUserConversationStreamList(params.senderId , params.reciverId);
-    } catch (error, stack) {
+    } catch (error) {
       rethrow ;
     }
   }

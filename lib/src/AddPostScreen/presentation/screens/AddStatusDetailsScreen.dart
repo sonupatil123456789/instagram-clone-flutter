@@ -21,8 +21,7 @@ import '../../../../utils/theams/text_theams.dart';
 class AddStatusDetailsScreen extends StatefulWidget {
   FileData fileData;
 
-  AddStatusDetailsScreen({
-    Key? key,
+  AddStatusDetailsScreen({super.key, 
     required this.fileData,
   });
 
@@ -109,7 +108,7 @@ class _AddStatusDetailsScreenState extends State<AddStatusDetailsScreen>
                   child: BlocBuilder<PostBloc, PostState>(
                     builder: (BuildContext context, PostState state) {
                       return ListView.builder(
-                        itemCount: state.hashTags?.length ?? 0,
+                        itemCount: state.hashTags.length ?? 0,
                         padding: EdgeInsets.only(
                             left: super.screenWidthPercentage(context, 6)),
                         scrollDirection: Axis.horizontal,
@@ -141,7 +140,7 @@ class _AddStatusDetailsScreenState extends State<AddStatusDetailsScreen>
                         context: context,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return SearchUserToTagBottomSheet();
+                          return const SearchUserToTagBottomSheet();
                         });
                   },
                   child: Container(
@@ -194,7 +193,7 @@ class _AddStatusDetailsScreenState extends State<AddStatusDetailsScreen>
                   child: BlocBuilder<PostBloc, PostState>(
                     builder: (BuildContext context, PostState state) {
                       return ListView.builder(
-                        itemCount: state.tagPeoples?.length ?? 0,
+                        itemCount: state.tagPeoples.length ?? 0,
                         padding: EdgeInsets.only(
                             left: super.screenWidthPercentage(context, 6)),
                         scrollDirection: Axis.horizontal,

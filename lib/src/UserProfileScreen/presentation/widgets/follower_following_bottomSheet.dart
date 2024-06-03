@@ -53,9 +53,9 @@ class FollowingFollowersBottomSheet extends StatelessWidget with ScreenUtils {
                 alignment: WrapAlignment.start,
                 runAlignment: WrapAlignment.start,
                 spacing: 6,
-                children: followingFollowers!.map((userLikeDetails) {
+                children: followingFollowers.map((userLikeDetails) {
                   return SquareCard(
-                    data: userLikeDetails as FollowEntity,
+                    data: userLikeDetails,
                   );
                 }).toList(),
               ),

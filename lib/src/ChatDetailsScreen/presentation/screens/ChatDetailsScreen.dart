@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +10,6 @@ import 'package:instagram_clone/src/Authantication/data/model/HiveUserModel.dart
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
 import 'package:instagram_clone/src/ChatDetailsScreen/presentation/widgets/upload_file_bottomsheet.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/model/UserChatMessageModel.dart';
-import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserChatMessageEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListEvents.dart';
 import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/screens/OtherUserProfileScreen.dart';
@@ -163,7 +161,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
 
                         if (snapshot.connectionState ==
                             ConnectionState.active) {
-                          if (snapshot.data?.length == 0) {
+                          if (snapshot.data!.isEmpty) {
                             return Container(
                               alignment: Alignment.center,
                               child: Text(

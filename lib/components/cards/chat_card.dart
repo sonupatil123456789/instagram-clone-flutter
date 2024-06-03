@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
-import 'package:instagram_clone/src/ChatListScreen/data/model/UserMessageListModel.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserMessageListEntity.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/resources/datetime_formater.dart';
@@ -232,7 +230,7 @@ Widget displayMessageIcon(String uuid, String messageType, String name,
           size: 14,
         ),
         Text(
-          "  ${message} ",
+          "  $message ",
           maxLines: 1,
           style: textStyle,
         ),

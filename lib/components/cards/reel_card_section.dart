@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/components/like_heart.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
@@ -61,7 +59,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
 
   @override
   Widget build(BuildContext context) {
-    bool _isLiked = widget.videoPost.likes!.contains(widget.likedPostUser);
+    bool isLiked = widget.videoPost.likes!.contains(widget.likedPostUser);
     return SizedBox(
       width: super.screenWidthPercentage(context, 100),
       height: super.screenHeightPercentage(context, 100),
@@ -174,7 +172,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
             Positioned(
               top: super.screenHeightPercentage(context, 55),
               right: super.screenWidthPercentage(context, 5),
-              child: Container(
+              child: SizedBox(
                 width: super.screenWidthPercentage(context, 14),
                 height: super.screenHeightPercentage(context, 25),
                 // color: Colors.amber,
@@ -183,7 +181,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
                   children: [
                     sideButtons(
                         context: context,
-                        icon: _isLiked
+                        icon: isLiked
                             ? ImageResources.likeFilled
                             : ImageResources.like,
                         textData: '${widget.videoPost.likes?.length ?? 0}',
@@ -239,7 +237,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
                 onTap: () {
                   setState(() {
                     muteVolume = !muteVolume;
-                    _controller?.setVolume(muteVolume ? 1.0 : 0.0);
+                    _controller.setVolume(muteVolume ? 1.0 : 0.0);
                   });
                 },
                 child: Container(

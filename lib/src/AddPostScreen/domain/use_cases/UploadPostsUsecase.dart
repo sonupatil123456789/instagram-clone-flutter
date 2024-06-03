@@ -17,17 +17,15 @@ class UploadPostsUsecase implements UseCase<PostEntity?, UploadPostsParams> {
     try {
       PostEntity data = await reposatory.uploadPost(params);
 
-      if (data != null) {
-         ListnersUtils.showFlushbarMessage(
-            "Post Uploaded Successfull",
-            successColor,
-            white,
-            "Success",
-            Icons.done,
-            context);
-        Navigator.pushNamedAndRemoveUntil(context, RoutesName.mainSectionScreen, (route) => route.isFirst);
-      }
-      return data;
+       ListnersUtils.showFlushbarMessage(
+          "Post Uploaded Successfull",
+          successColor,
+          white,
+          "Success",
+          Icons.done,
+          context);
+      Navigator.pushNamedAndRemoveUntil(context, RoutesName.mainSectionScreen, (route) => route.isFirst);
+          return data;
     } catch (e) {
       ListnersUtils.showFlushbarMessage(
           "Post uploading fail unexpectedly . Try after some Time ",
@@ -43,13 +41,21 @@ class UploadPostsUsecase implements UseCase<PostEntity?, UploadPostsParams> {
 }
 
 class UploadPostsParams extends PostEntity {
+  @override
   String? postDiscription;
+  @override
   String? uniqueName;
+  @override
   String? location;
+  @override
   String? profileImage;
+  @override
   String? postImage;
+  @override
   String? postImageFileType;
+  @override
   List<String>? tags;
+  @override
   List<TagPeopleEntity>? tagPeople;
 
   UploadPostsParams({

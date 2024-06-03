@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
-import 'package:instagram_clone/src/BookmarkScreen/presentation/screens/BookmarkScreen.dart';
 import 'package:instagram_clone/src/SettingsScreen/presentation/screens/SettingsScreen.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileBloc.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileEvent.dart';

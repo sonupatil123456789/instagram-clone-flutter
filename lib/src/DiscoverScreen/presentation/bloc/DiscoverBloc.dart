@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone/src/Authantication/data/model/FollowModel.dart';
 import 'package:instagram_clone/src/DiscoverScreen/domain/use_cases/followUserUsecase.dart';
 import 'package:instagram_clone/src/DiscoverScreen/presentation/bloc/DiscoverEvent.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';

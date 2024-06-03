@@ -13,7 +13,7 @@ class IsOnlineUsecase implements UseCase<void, bool> {
     try {
        repository.isUserOnline(isOnline);
        ListnersUtils.showToastMessage(isOnline == true ? "Online" : "Offline", Colors.black38);
-    } on Exception catch (error) {
+    } on Exception {
        
     }
   }

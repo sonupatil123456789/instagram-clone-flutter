@@ -4,7 +4,6 @@ import 'package:instagram_clone/core/firebaseServices/db/firebaseBookmarkCollect
 import 'package:instagram_clone/src/AddPostScreen/data/model/PostModel.dart';
 import 'package:instagram_clone/src/BookmarkScreen/data/data_sources/remote_data_source.dart';
 import 'package:instagram_clone/utils/screen_utils/logging_utils.dart';
-import 'package:uuid/uuid.dart';
 
 class BookmarkRemoteDataSourceImpl implements BookmarkRemoteDataSource {
   PostModel postModel;

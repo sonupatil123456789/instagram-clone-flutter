@@ -13,9 +13,9 @@ class GetUserUsecase implements UseCase<UserEntity, bool> {
   Future<UserEntity> call(bool isRefresh, BuildContext context) async {
     try {
       return await repository.getUser(isRefresh);
-    } on FirebaseException catch (error, stack) {
+    } on FirebaseException {
        rethrow;
-    } catch (error, stack) {
+    } catch (error) {
       rethrow;
     }
   }

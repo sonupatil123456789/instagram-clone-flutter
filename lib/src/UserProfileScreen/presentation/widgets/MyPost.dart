@@ -12,7 +12,7 @@ import 'package:instagram_clone/utils/theams/text_theams.dart';
 class MyPosts extends StatelessWidget with ScreenUtils {
   final List<PostEntity> myPostList;
 
-  MyPosts({Key? key, required this.myPostList}) : super(key: key);
+  MyPosts({super.key, required this.myPostList});
 
   @override
   Widget build(BuildContext context) {

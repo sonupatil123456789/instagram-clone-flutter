@@ -47,10 +47,14 @@ class UploadStatusUsecase implements UseCase<bool, UploadStatusParams> {
 }
 
 class UploadStatusParams extends StatusEntity{
-   String? statusImageFileType;
-   String? statusImage;
-   String? statusDiscription;
-   List<TagPeopleEntity>? tagPeople;
+   @override
+  String? statusImageFileType;
+   @override
+  String? statusImage;
+   @override
+  String? statusDiscription;
+   @override
+  List<TagPeopleEntity>? tagPeople;
 
 
   UploadStatusParams({

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:instagram_clone/utils/theams/color_pallet.dart';
 import 'package:instagram_clone/utils/theams/text_theams.dart';
@@ -51,7 +49,7 @@ class MessageTextField extends StatelessWidget {
               hintStyle: CoustomTextStyle.paragraph3.copyWith(color: grey2),
               labelStyle:
                   CoustomTextStyle.paragraph3.copyWith(color: primaryShade500),
-              suffixIcon: Container(
+              suffixIcon: SizedBox(
                 width: MediaQuery.of(context).size.width *0.28,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -94,13 +92,13 @@ class MessageTextField extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
               enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
                   borderSide: BorderSide(width: 0, color: primaryShade50)),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
                   borderSide: BorderSide(width: 0, color: primaryShade50)),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(6)),
+                borderRadius: const BorderRadius.all(Radius.circular(6)),
                 borderSide: BorderSide(width: 0, color: primaryShade50),
               ))),
     );

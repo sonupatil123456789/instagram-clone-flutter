@@ -35,7 +35,7 @@ class InputFielUtils {
   }
 
   validatePassword(String password) {
-    if (password!.isEmpty || password == null) {
+    if (password.isEmpty) {
       return 'password should not be empty';
     }
     if (password.length <= 6) {
@@ -83,6 +83,7 @@ class InputFielUtils {
     } catch (e) {
       print('Error picking file: $e');
     }
+    return null;
   }
 
   static Future<PlatformFile?> getALlMyFile(
@@ -109,6 +110,7 @@ class InputFielUtils {
     } catch (e) {
       print('Error picking file: $e');
     }
+    return null;
   }
 
   static Future<FileData?> pickImages(
@@ -130,6 +132,7 @@ class InputFielUtils {
     } catch (e) {
       print('Image picker error: $e');
     }
+    return null;
   }
 
   static void openFileFromUrl(String fileUri, context) async {

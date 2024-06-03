@@ -10,9 +10,9 @@ class VideoDetails extends StatefulWidget {
   String url;
 
   VideoDetails({
-    Key? key,
+    super.key,
     required this.url,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoDetails> createState() => _VideoDetailsState();

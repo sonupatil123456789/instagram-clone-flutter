@@ -8,8 +8,8 @@ class CoustomLog {
   }
 
   static coustomLogError(String errorTitle ,  error , StackTrace stack ){
-    log("[ Error IN $errorTitle ] ===>>>> ${error}" , error:error, );
-    log("[ StackTrace In $errorTitle ] ===>>>> ${stack}" , stackTrace: stack);
+    log("[ Error IN $errorTitle ] ===>>>> $error" , error:error, );
+    log("[ StackTrace In $errorTitle ] ===>>>> $stack" , stackTrace: stack);
   }
   
 }

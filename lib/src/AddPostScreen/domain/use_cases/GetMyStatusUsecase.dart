@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/UserStatusEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/repository/repository.dart';
 import 'package:instagram_clone/utils/resources/use_case.dart';

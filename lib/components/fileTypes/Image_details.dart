@@ -10,9 +10,9 @@ class ImageDetails extends StatefulWidget {
   String url;
 
   ImageDetails({
-    Key? key,
+    super.key,
     required this.url,
-  }) : super(key: key);
+  });
 
   @override
   State<ImageDetails> createState() => _ImageDetailsState();

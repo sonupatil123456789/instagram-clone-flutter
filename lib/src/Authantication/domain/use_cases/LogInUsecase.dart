@@ -14,14 +14,12 @@ class LoginUsecase implements UseCase<UserEntity?, LogInParams> {
   Future<UserEntity?> call(LogInParams params, BuildContext context) async {
     try {
       var data = await repository.logInWithEmailIdPassword(params);
-      if (data != null) {
-        Navigator.pushNamedAndRemoveUntil(context,RoutesName.mainSectionScreen, (route) => false);
-      } 
-      return data;
-    } on FirebaseAuthException catch (error , stack) {
+      Navigator.pushNamedAndRemoveUntil(context,RoutesName.mainSectionScreen, (route) => false);
+          return data;
+    } on FirebaseAuthException catch (error) {
       CoustomFirebaseException().firebasePhoneAuthExceptionHandler(context, error.code);
       return null;
-    } catch (error , stack) {
+    } catch (error) {
        return null;
     }
   }
@@ -29,7 +27,9 @@ class LoginUsecase implements UseCase<UserEntity?, LogInParams> {
 
 class LogInParams extends UserEntity {
 
+  @override
   String? password;
+  @override
   String? email;
 
   LogInParams({

@@ -42,7 +42,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
       final imageUrl = await storage.uploadPostFile(
           post.postImage.toString(), post.postImageFileType, userId.toString());
 
-      final postId = Uuid().v4();
+      final postId = const Uuid().v4();
 
       postModel = postModel.copyWith(
         uuid: userId,
@@ -78,7 +78,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
   Future<bool> uploadStatus(StatusModel status) async {
     Box<HiveUserModel> userDataBase = Hive.box<HiveUserModel>('UserDataBase');
     HiveUserModel? user = userDataBase.get("User");
-    final statusId = Uuid().v4();
+    final statusId = const Uuid().v4();
     try {
       final imageUrl = await storage.uploadStatusFile(status.statusImage.toString(),status.statusImageFileType, user!.uuid.toString());
 
@@ -91,7 +91,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
 
       CoustomLog.coustomLogData("uploadStatus", statusData.toMap());
 
-      await statusCollection.updateStatusArrey( user!.uuid!,"statusList", statusData.toMap());
+      await statusCollection.updateStatusArrey( user.uuid!,"statusList", statusData.toMap());
       // await statusCollection.setStatus( user!.uuid!,statusId, statusData.toMap());
 
       return true;

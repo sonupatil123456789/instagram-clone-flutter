@@ -30,7 +30,7 @@ class HomeScreenRemoteDataSourceImpl implements HomeScreenRemoteDataSource {
     try {
       if (!isFetched || isRefresh) {
         List<String> followingUserUuid =
-            following!.map((following) => following.uuid.toString()).toList();
+            following.map((following) => following.uuid.toString()).toList();
         posts.clear();
         for (String userId in followingUserUuid) {
           querySnapshot =
@@ -101,7 +101,7 @@ class HomeScreenRemoteDataSourceImpl implements HomeScreenRemoteDataSource {
       List<FollowModel> following, bool isRefresh) {
     try {
       List<String> followingUserUuid =
-          following!.map((following) => following.uuid.toString()).toList();
+          following.map((following) => following.uuid.toString()).toList();
 
       Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshotStream =postCollection.getUserSpecificPostsStream(followingUserUuid);
       Stream<List<PostModel>> userPostStream = querySnapshotStream.map(
@@ -152,7 +152,7 @@ class HomeScreenRemoteDataSourceImpl implements HomeScreenRemoteDataSource {
   @override
   Future<bool> postCommentReplay(String postId, CommentsModel comment) async {
     try {
-      final commentId = Uuid().v4();
+      final commentId = const Uuid().v4();
 
       final uploadComment = comment.copyWith(
           commentId: commentId, createdAt: DateTime.now().toString());

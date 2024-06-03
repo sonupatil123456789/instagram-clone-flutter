@@ -102,7 +102,7 @@ class _PostTextFieldState extends State<PostTextField>with ScreenUtils {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 10.0),
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         borderSide:
                             BorderSide(width: 1, color: primaryShade200)),
                     errorStyle:
@@ -111,11 +111,11 @@ class _PostTextFieldState extends State<PostTextField>with ScreenUtils {
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(width: 1, color: errorColor)),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         borderSide:
                             BorderSide(width: 1, color: primaryShade500)),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
                       borderSide: BorderSide(width: 2, color: primaryShade500),
                     ))),
           ),

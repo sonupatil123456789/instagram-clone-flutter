@@ -17,26 +17,29 @@ class CreatAccountUsecase implements UseCase<UserEntity?, CreatAccountParams> {
       CreatAccountParams params, BuildContext context) async {
     try {
       var data = repository.creatAcountWithEmailIdPassword(params);
-      if (data != null) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, RoutesName.mainSectionScreen, (route) => false);
-      }
-      return data;
-    } on FirebaseAuthException catch (error, stack) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, RoutesName.mainSectionScreen, (route) => false);
+          return data;
+    } on FirebaseAuthException catch (error) {
       CoustomFirebaseException()
           .firebasePhoneAuthExceptionHandler(context, error.code);
       return null;
-    } catch (error, stack) {
+    } catch (error) {
       return null;
     }
   }
 }
 
 class CreatAccountParams extends UserEntity {
+  @override
   String? uniqueName;
+  @override
   String? userName;
+  @override
   String? password;
+  @override
   String? email;
+  @override
   String? phoneNumber;
   CreatAccountParams({
     this.uniqueName,

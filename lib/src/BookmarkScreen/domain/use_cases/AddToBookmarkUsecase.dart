@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/src/AddPostScreen/domain/entity/CommentEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/PostEntity.dart';
 import 'package:instagram_clone/utils/resources/use_case.dart';
 import 'package:instagram_clone/utils/screen_utils/listners_utils.dart';

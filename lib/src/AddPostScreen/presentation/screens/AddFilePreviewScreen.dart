@@ -17,10 +17,10 @@ class AddFilePreviewScreen extends StatefulWidget {
   String navigateToScreen;
 
   AddFilePreviewScreen({
-    Key? key,
+    super.key,
     required this.fileData,
     required this.navigateToScreen
-  }) : super(key: key);
+  });
 
   @override
   State<AddFilePreviewScreen> createState() => _AddFilePreviewScreenState();

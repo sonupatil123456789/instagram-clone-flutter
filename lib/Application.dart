@@ -33,7 +33,6 @@ import 'package:instagram_clone/src/Authantication/domain/use_cases/UpdateUserUs
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
 import 'package:instagram_clone/src/BookmarkScreen/data/data_sources/remote_data_source_impl.dart';
 import 'package:instagram_clone/src/BookmarkScreen/data/repository_impl/repository_impl.dart';
-import 'package:instagram_clone/src/BookmarkScreen/domain/repository/repository.dart';
 import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/AddToBookmarkUsecase.dart';
 import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/DeletBookmarkUsecase.dart';
 import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/GetAllUsersBookmarkUsecase.dart';

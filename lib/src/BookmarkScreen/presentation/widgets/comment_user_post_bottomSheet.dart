@@ -25,9 +25,9 @@ class CommentUserPostBottomSheet extends StatefulWidget{
   PostEntity postData;
 
   CommentUserPostBottomSheet({
-    Key? key,
+    super.key,
     required this.postData,
-  }) : super(key: key);
+  });
 
   @override
   State<CommentUserPostBottomSheet> createState() => _CommentUserPostBottomSheetState();
@@ -120,7 +120,7 @@ class _CommentUserPostBottomSheetState extends State<CommentUserPostBottomSheet>
 
                             if (snapshot.connectionState ==
                                 ConnectionState.active) {
-                              if (snapshot.data?.length == 0) {
+                              if (snapshot.data!.isEmpty) {
                                 return Container(
                                   height: 500,
                                   alignment: Alignment.center,

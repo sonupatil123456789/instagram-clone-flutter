@@ -1,7 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';
 import 'package:instagram_clone/utils/routes/routes_name.dart';

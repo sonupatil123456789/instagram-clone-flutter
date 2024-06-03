@@ -78,7 +78,7 @@ class ChatListRemoteDataSourceImpl implements ChatListRemoteDataSource {
   @override
   Future<bool> sendMessage(
       UserModel sender, UserModel reciver, UserChatMessageModel chat) async {
-    final messageId = Uuid().v4();
+    final messageId = const Uuid().v4();
     UserChatMessageModel message = UserChatMessageModel();
 
     try {

@@ -47,17 +47,17 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
     fileType = CustomUploadFileTypeExtension.stringToEnum(
         widget.postData.postImageFileType!);
 
-    // if (fileType == CustomUploadFileType.Video) {
-    //   _controller = VideoPlayerController.networkUrl(Uri.parse(widget
-    //           .postData.postImage ??
-    //       "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"))
-    //     ..setLooping(true)
-    //     ..initialize().then((_) {
-    //       _controller?.setVolume(0.0);
-    //       setState(() {});
-    //     })
-    //     ..play();
-    // }
+    if (fileType == CustomUploadFileType.Video) {
+      _controller = VideoPlayerController.networkUrl(Uri.parse(widget
+              .postData.postImage ??
+          "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4"))
+        ..setLooping(true)
+        ..initialize().then((_) {
+          _controller?.setVolume(0.0);
+          setState(() {});
+        })
+        ..play();
+    }
   }
 
   @override
@@ -351,7 +351,7 @@ Widget dynamicSocialMediaPost(
     );
   }
   if (fileType == CustomUploadFileType.Video) {
-    if (controller != null) {
+    // if (controller != null) {
       return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, RoutesName.videoDetailScreen,
@@ -359,13 +359,13 @@ Widget dynamicSocialMediaPost(
         },
         child: VideoPlayer(controller!),
       );
-    }
+    // }
 
-    return Center(
-      child: CircularProgressIndicator(
-        color: primaryShade500,
-      ),
-    );
+    // return Center(
+    //   child: CircularProgressIndicator(
+    //     color: primaryShade500,
+    //   ),
+    // );
   } else {
     return const Center(child: Icon(Icons.error));
   }

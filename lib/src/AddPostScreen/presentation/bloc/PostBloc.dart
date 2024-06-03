@@ -35,8 +35,8 @@ class PostBloc extends Bloc<PostEvents, PostState> {
     })
       : super(PostState(
             currentState: CurrentAppState.INITIAL,
-            hashTags: [],
-            tagPeoples: [], friendsStatusListStream:  StreamController<List<UserStatusEntity>>.broadcast(), userStatus: UserStatusEntity(),)) {
+            hashTags: const [],
+            tagPeoples: const [], friendsStatusListStream:  StreamController<List<UserStatusEntity>>.broadcast(), userStatus: UserStatusEntity(),)) {
     on<TagPeopleEvent>(_tagUserEvent);
     on<HashTagEvent>(_hashTagEvent);
     on<UploadPostEvent>(_uploadPostEvent);

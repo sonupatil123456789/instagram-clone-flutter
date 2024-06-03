@@ -54,7 +54,7 @@ class LikedUserPostBottomSheet extends StatelessWidget with ScreenUtils {
                 spacing: 6,
                 children: likesList!.map((userLikeDetails) {
                   return SquareCard(
-                    data: userLikeDetails as LikesEntity,
+                    data: userLikeDetails,
                   );
                 }).toList(),
               ),

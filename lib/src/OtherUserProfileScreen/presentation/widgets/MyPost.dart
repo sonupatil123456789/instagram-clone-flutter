@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/PostEntity.dart';
-import 'package:instagram_clone/src/UserProfileScreen/presentation/screens/UserProfileScreen.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';
 import 'package:instagram_clone/utils/routes/routes_name.dart';
@@ -12,7 +11,7 @@ import 'package:instagram_clone/utils/theams/text_theams.dart';
 class MyPosts extends StatelessWidget with ScreenUtils {
   final List<PostEntity> myPostList;
 
-  MyPosts({Key? key, required this.myPostList}) : super(key: key);
+  MyPosts({super.key, required this.myPostList});
 
   @override
   Widget build(BuildContext context) {

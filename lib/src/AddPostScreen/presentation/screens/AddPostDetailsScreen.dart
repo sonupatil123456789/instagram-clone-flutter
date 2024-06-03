@@ -23,8 +23,7 @@ import '../../../../utils/theams/text_theams.dart';
 class AddPostDetailsScreen extends StatefulWidget {
   FileData fileData;
 
-  AddPostDetailsScreen({
-    Key? key,
+  AddPostDetailsScreen({super.key, 
     required this.fileData,
   });
 
@@ -108,7 +107,7 @@ class _AddPostDetailsScreenState extends State<AddPostDetailsScreen>
                   child: BlocBuilder<PostBloc, PostState>(
                     builder: (BuildContext context, PostState state) {
                       return ListView.builder(
-                        itemCount: state.hashTags?.length ?? 0,
+                        itemCount: state.hashTags.length ?? 0,
                         padding: EdgeInsets.only(
                             left: super.screenWidthPercentage(context, 6)),
                         scrollDirection: Axis.horizontal,
@@ -140,7 +139,7 @@ class _AddPostDetailsScreenState extends State<AddPostDetailsScreen>
                         context: context,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return SearchUserToTagBottomSheet();
+                          return const SearchUserToTagBottomSheet();
                         });
                   },
                   child: Container(
@@ -202,7 +201,7 @@ class _AddPostDetailsScreenState extends State<AddPostDetailsScreen>
                   child: BlocBuilder<PostBloc, PostState>(
                     builder: (BuildContext context, PostState state) {
                       return ListView.builder(
-                        itemCount: state.tagPeoples?.length ?? 0,
+                        itemCount: state.tagPeoples.length ?? 0,
                         padding: EdgeInsets.only(
                             left: super.screenWidthPercentage(context, 6)),
                         scrollDirection: Axis.horizontal,
@@ -265,7 +264,7 @@ class _AddPostDetailsScreenState extends State<AddPostDetailsScreen>
                             fileData: widget.fileData,
                             discription: discription.text.trim(),
                             location: location.text.trim(),
-                            uniqueName: user!.uniqueName.toString(), profileImage: user!.profileImage.toString()));
+                            uniqueName: user.uniqueName.toString(), profileImage: user.profileImage.toString()));
                       }
                     },
                     width: super.screenWidthPercentage(context, 90),

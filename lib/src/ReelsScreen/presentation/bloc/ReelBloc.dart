@@ -10,7 +10,7 @@ class ReelBloc extends Bloc<ReelEvent, ReelState> {
 
   ReelBloc({
     required this.getAllVideoPost,
-  }) : super(ReelState(  currentState: CurrentAppState.INITIAL, videoPostList: [])) {
+  }) : super(ReelState(  currentState: CurrentAppState.INITIAL, videoPostList: const [])) {
     on<GetAllVideoPostEvent>(_getAllVideoPostEvent);
   }
 

@@ -7,7 +7,6 @@ import 'package:instagram_clone/utils/resources/enums.dart';
 import 'package:instagram_clone/utils/routes/routes_name.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
 import 'package:instagram_clone/utils/theams/color_pallet.dart';
-import 'package:path/path.dart';
 
 class All extends StatelessWidget with ScreenUtils {
   List<PostEntity> myPostList;

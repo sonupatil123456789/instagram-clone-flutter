@@ -65,7 +65,7 @@ class _AuthTextFieldState extends State<AuthTextField>with ScreenUtils {
                 style: CoustomTextStyle.paragraph3,
                 autocorrect: true,
                 obscuringCharacter: "*",
-                inputFormatters: [],
+                inputFormatters: const [],
                 obscureText: widget.isPassword == true && hidePassword == true ? true : false,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textAlign: TextAlign.start,
@@ -120,7 +120,7 @@ class _AuthTextFieldState extends State<AuthTextField>with ScreenUtils {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 10.0),
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         borderSide:
                             BorderSide(width: 1, color: primaryShade200)),
                     errorStyle:
@@ -129,11 +129,11 @@ class _AuthTextFieldState extends State<AuthTextField>with ScreenUtils {
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         borderSide: BorderSide(width: 1, color: errorColor)),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                         borderSide:
                             BorderSide(width: 1, color: primaryShade500)),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(6)),
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
                       borderSide: BorderSide(width: 2, color: primaryShade500),
                     ))),
           ),

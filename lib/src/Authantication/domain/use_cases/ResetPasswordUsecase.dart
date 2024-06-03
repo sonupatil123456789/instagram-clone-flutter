@@ -20,7 +20,7 @@ class ResetPasswordUsecase implements UseCase<void, String> {
           "Password Reset Email Sent",
           Icons.error,
           context);
-    } on Exception catch (error) {
+    } on Exception {
       ListnersUtils.showFlushbarMessage(
           "Fail to send reset password mail . Please Try After Some Time",
           errorColor,

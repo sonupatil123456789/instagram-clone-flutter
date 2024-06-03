@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../firebaseServices.dart';
 
 class FirebaseBookmarkCollection extends FirebaseServiceProvider {
-  @override
-  FirebaseFirestore get dataBase => super.dataBase;
 
 
   databasePath() {

@@ -24,7 +24,7 @@ class StatusStoryCard extends StatelessWidget with ScreenUtils {
       onTap: () {
       onPress();
       },
-      child: Container(
+      child: SizedBox(
         width: super.screenWidthPercentage(context, 22),
         // color: Colors.amberAccent,
         child: Column(

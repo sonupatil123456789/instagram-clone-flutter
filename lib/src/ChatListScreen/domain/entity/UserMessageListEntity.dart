@@ -1,7 +1,6 @@
 
 
 import 'package:equatable/equatable.dart';
-import 'package:instagram_clone/src/Authantication/domain/entity/FollowEntity.dart';
 
 
 class UserMessageListEntity extends Equatable {

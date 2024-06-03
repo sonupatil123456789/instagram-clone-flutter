@@ -13,7 +13,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     required this.getMyPost,
     required this.deletPost,
   }) : super(UserProfileState(
-            currentState: CurrentAppState.INITIAL, myPostList: [])) {
+            currentState: CurrentAppState.INITIAL, myPostList: const [])) {
     on<GetMyPostEvent>(_getMyPostEvent);
     on<DeletMyPostEvent>(_deletMyPostEvent);
   }

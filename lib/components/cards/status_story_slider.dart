@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:instagram_clone/components/back_button_navbar.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/StatusEntity.dart';
@@ -166,23 +164,21 @@ class _StatusStorySliderState extends State<StatusStorySlider>
       );
     }
     if (fileType == CustomUploadFileType.Video) {
-      if (controller != null) {
-        return GestureDetector(
-          onTap: () {},
-          child: VideoPlayer(_controller!),
-        );
-      }
-
-      return Center(
-        child: CircularProgressIndicator(
-          color: primaryShade500,
-        ),
+        if (controller != null) {
+      return GestureDetector(
+        onTap: () {},
+        child: VideoPlayer(_controller!),
       );
+    }
+
+    return Center(
+      child: CircularProgressIndicator(
+        color: primaryShade500,
+      ),
+    );
+    
     } else {
       return const Center(child: Icon(Icons.error));
     }
   }
 }
-
-const String discription =
-    ' https://firebasestorage.googleapis.com/v0/b/instagramclone-d205f.appspot.com/o/Files%2FK79R9dnFfLVYDGG8VGWQXX20dXf1%2Fhappy%20birthday%20Deepu%2FInstagram_1000062559.jpg_happy%20birthday%20Deepu_1715241885492?alt=media&token=88518e24-aaa8-490c-a006-0dcce019d410, statusImageFileType: Image, statusDiscription: happy birthday Deepu, tagPeople: [], viewedStatus: [], createdAt: 2024-05-09 13:34:50.248106 ), StatusModel (statusId: ba03af4e-fce5-46d6-a5b4-c8ddf5bae214, statusImage: https://firebasestorage.googleapis.com/v0/b/instagramclone-d205f.appspot.com/o/Files%2FK79R9dnFfLVYDGG8VGWQXX20dXf1%2Fhappy%20holidays%20%F0%9F%8E%88%2FInstagram_1000055773.jpg_happy%20holidays%20%F0%9F%8E%88_1715241929852?alt=media&token=b3909a52-ae6a-4c1b-8460-557547d0d466';

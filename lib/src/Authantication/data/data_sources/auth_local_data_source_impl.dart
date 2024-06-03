@@ -23,7 +23,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   Future<UserModel> getUserDataFromHiveDatabase(String key) async {
     try {
-      HiveUserModel? getStorage = await userBox.get(key);
+      HiveUserModel? getStorage = userBox.get(key);
       UserModel data = HiveUserModel.toEntity(getStorage);
       return data;
     } catch (e) {

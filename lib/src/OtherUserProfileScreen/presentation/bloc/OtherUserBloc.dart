@@ -31,7 +31,7 @@ class OtherUserBloc extends Bloc<OtherUserEvent, OtherUserState> {
     required this.followUser,
   
   })
-    : super(OtherUserState(postList: [], otherUserDetailsStream:  StreamController<UserEntity>.broadcast(), otherUserDetails: UserModel(), 
+    : super(OtherUserState(postList: const [], otherUserDetailsStream:  StreamController<UserEntity>.broadcast(), otherUserDetails: UserModel(), 
     currentState: CurrentAppState.INITIAL, isUserFollowing: false,)) {
            on<GetOtherUserDetailDataEvent>(_getOtherUserDetailDataEvent);
            on<FollowOtherUserEvent>(_followUserEvent);
@@ -77,12 +77,8 @@ class OtherUserBloc extends Bloc<OtherUserEvent, OtherUserState> {
     emit(state.copyWith(currentState: CurrentAppState.LOADING));
     try {
       final data = await followUser.call(FollowUserParams(following: event.following),event.context);
-      if (data != null) {
-        emit(state.copyWith(currentState: CurrentAppState.SUCCESS, isUserFollowing: data));
-      } else {
-        emit(state.copyWith(currentState: CurrentAppState.ERROR,));
-      }
-    } catch (e) {
+      emit(state.copyWith(currentState: CurrentAppState.SUCCESS, isUserFollowing: data));
+        } catch (e) {
       emit(state.copyWith(currentState: CurrentAppState.ERROR,));
     }
   }

@@ -13,7 +13,7 @@ class GetUserStreamListUsecase implements StreamedUseCase<Stream<List<UserEntity
     Stream<List<UserEntity>> call(String  searchQuery, BuildContext context)  {
     try {
       return repository.getAllUserStreamList(searchQuery);
-    } catch (error, stack) {
+    } catch (error) {
        rethrow ;
     }
   }

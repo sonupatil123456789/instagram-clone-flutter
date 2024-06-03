@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:instagram_clone/src/Authantication/data/model/HiveUserModel.dart';
 import 'package:instagram_clone/src/ChatDetailsScreen/presentation/widgets/message_type.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserChatMessageEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
@@ -16,9 +15,8 @@ class MessageCard extends StatefulWidget {
   Function onTapHandler;
   dynamic selectedItem;
   bool senderUser;
-  String senderUuid ;
-  String reciverUuid ;
-
+  String senderUuid;
+  String reciverUuid;
 
   MessageCard({
     super.key,
@@ -44,7 +42,7 @@ class _MessageCardState extends State<MessageCard> with ScreenUtils {
           context.read<ChatListBloc>().add(DeletMessageEvent(
               context: context,
               senderId: widget.senderUuid,
-              reciverId: widget.reciverUuid!,
+              reciverId: widget.reciverUuid,
               messageId: widget.messageData.messageId!));
         },
         child: Container(
@@ -128,12 +126,9 @@ class _MessageCardState extends State<MessageCard> with ScreenUtils {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  widget.messageData.message ?? '',
-                  softWrap: true,
-                  style: CoustomTextStyle.paragraph4.copyWith(
-                    fontWeight: FontWeight.w300,
-                  ),
+                MessageType(
+                  message: widget.messageData.message!,
+                  messageType: widget.messageData.messageType!,
                 ),
                 const SizedBox(
                   height: 3,

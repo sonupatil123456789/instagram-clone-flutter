@@ -36,9 +36,9 @@ class _ReelsScreenState extends State<ReelsScreen> with ScreenUtils {
     Box<HiveUserModel> userDataBase = Hive.box<HiveUserModel>('UserDataBase');
     userData = HiveUserModel.toEntity(userDataBase.get("User"));
     likePost = likePost.copyWith(
-        uniqueName: userData!.uniqueName,
-        profileImage: userData!.profileImage,
-        uuid: userData!.uuid);
+        uniqueName: userData.uniqueName,
+        profileImage: userData.profileImage,
+        uuid: userData.uuid);
   }
 
   @override

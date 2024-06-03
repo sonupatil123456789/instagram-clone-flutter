@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:instagram_clone/components/back_button_navbar.dart';
-import 'package:instagram_clone/components/cards/discover_grid_card.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
 import 'package:instagram_clone/utils/theams/color_pallet.dart';
 
@@ -10,9 +8,9 @@ class PdfDetails extends StatefulWidget {
   String url;
 
   PdfDetails({
-    Key? key,
+    super.key,
     required this.url,
-  }) : super(key: key);
+  });
 
   @override
   State<PdfDetails> createState() => _PdfDetailsState();
@@ -45,7 +43,7 @@ class _PdfDetailsState extends State<PdfDetails> with ScreenUtils {
             ).cachedFromUrl(
               widget.url,
               placeholder: (progress) =>
-                  Center(child: Text('${progress} %')),
+                  Center(child: Text('$progress %')),
               errorWidget: (error) => Center(child: Text(error.toString())),
             ),
 

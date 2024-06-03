@@ -14,7 +14,7 @@ class GetAllFriendsChattingUserStreamListUsecase implements StreamedUseCase<Stre
     Stream<List<UserMessageListEntity>> call(List<FollowEntity> following , BuildContext context)  {
     try {
       return repository.getAllFriendsChattingStreamList(following);
-    } catch (error, stack) {
+    } catch (error) {
       rethrow ;
     }
   }

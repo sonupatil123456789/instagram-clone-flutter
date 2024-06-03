@@ -41,7 +41,7 @@ class ResetPasswordScreen extends StatelessWidget with ScreenUtils {
                   SizedBox(
                     height: super.screenHeightPercentage(context, 2),
                   ),
-                  Container(
+                  SizedBox(
                       width: super.screenWidthPercentage(context, 90),
                       height: super.screenHeightPercentage(context, 5),
                       child: Text(

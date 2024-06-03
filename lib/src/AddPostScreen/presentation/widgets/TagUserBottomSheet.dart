@@ -15,7 +15,7 @@ import 'package:instagram_clone/utils/theams/text_theams.dart';
 import '../../../Authantication/domain/entity/UserEntity.dart';
 
 class SearchUserToTagBottomSheet extends StatefulWidget {
-  SearchUserToTagBottomSheet({super.key});
+  const SearchUserToTagBottomSheet({super.key});
 
   @override
   State<SearchUserToTagBottomSheet> createState() =>
@@ -124,7 +124,7 @@ class _SearchUserToTagBottomSheetState extends State<SearchUserToTagBottomSheet>
                               style: CoustomTextStyle.paragraph4));
                     }
                       
-                    if (snapshot.data?.length == 0) {
+                    if (snapshot.data!.isEmpty) {
                       return Container(
                         height: 500,
                         alignment: Alignment.center,

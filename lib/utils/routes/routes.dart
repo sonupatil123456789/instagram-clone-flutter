@@ -63,7 +63,7 @@ class Routes {
             builder: (buildContext) => const MainSection());
 
       case RoutesName.searcnUserScreen:
-        return MaterialPageRoute(builder: (buildContext) => SearchUserScreen());
+        return MaterialPageRoute(builder: (buildContext) => const SearchUserScreen());
 
       case RoutesName.imageDetailScreen:
        final userData = settings.arguments! as Map;

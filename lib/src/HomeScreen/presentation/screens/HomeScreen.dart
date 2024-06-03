@@ -66,9 +66,9 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
   initialise(BuildContext context, bool refresh) async {
     userData = await context.read<AuthBloc>().getUserDetails(context, refresh);
     likePost = likePost.copyWith(
-        uniqueName: userData!.uniqueName,
-        profileImage: userData!.profileImage,
-        uuid: userData!.uuid);
+        uniqueName: userData.uniqueName,
+        profileImage: userData.profileImage,
+        uuid: userData.uuid);
     context.read<HomeBloc>().getAllFriendsPostStreamEvent(context, userData.following, refresh);
     context.read<PostBloc>().getFollowersStatusStreamEvent(context, userData.following ?? []);
     await PermissionHandling.requestAllServicesPermissions();
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                                 }
 
                                 if (snapshot.connectionState ==ConnectionState.active) {
-                                  if (snapshot.data?.length == 0) {
+                                  if (snapshot.data!.isEmpty) {
                                     return Container(
                                       alignment: Alignment.center,
                                       child: Text(
@@ -275,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
+                  SizedBox(
                     width: super.screenWidthPercentage(context, 100),
                     height: super.screenHeightPercentage(context, 70),
                     child: StreamBuilder(
@@ -292,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
 
                         if (snapshot.connectionState ==
                             ConnectionState.active) {
-                          if (snapshot.data?.length == 0) {
+                          if (snapshot.data!.isEmpty) {
                             return Container(
                               height: 500,
                               alignment: Alignment.center,

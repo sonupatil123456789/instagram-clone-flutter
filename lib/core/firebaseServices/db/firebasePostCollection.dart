@@ -5,8 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../firebaseServices.dart';
 
 class FirebasePostCollection extends FirebaseServiceProvider {
-  @override
-  FirebaseFirestore get dataBase => super.dataBase;
 
   // FirebaseAuth get auth => super.firebaseAuthInstance;
 

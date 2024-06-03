@@ -31,9 +31,9 @@ class SearchUserCard extends StatelessWidget with ScreenUtils {
 
     final user = HiveUserModel.toEntity(userDataBase.get("User"));
     final currentUser = FollowModel(
-        profileImage: user!.profileImage,
-        uuid: user!.uuid,
-        uniqueName: user!.uniqueName);
+        profileImage: user.profileImage,
+        uuid: user.uuid,
+        uniqueName: user.uniqueName);
     bool following = data!.followers!.contains(currentUser);
 
     return GestureDetector(

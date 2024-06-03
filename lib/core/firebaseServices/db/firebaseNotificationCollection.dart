@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../firebaseServices.dart';
 
 class FirebaseNotificationCollection extends FirebaseServiceProvider {
-  @override
-  FirebaseFirestore get dataBase => super.dataBase;
 
 
   databasePath() {

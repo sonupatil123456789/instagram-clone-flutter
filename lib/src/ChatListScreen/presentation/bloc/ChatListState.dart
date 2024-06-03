@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/model/UserMessageListModel.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserChatMessageEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserMessageListEntity.dart';

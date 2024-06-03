@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/components/coustom_button.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
@@ -61,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> with ScreenUtils {
                   SizedBox(
                     height: super.screenHeightPercentage(context, 5),
                   ),
-                  Container(
+                  SizedBox(
                       width: super.screenWidthPercentage(context, 90),
                       height: super.screenHeightPercentage(context, 5),
                       child: Text(

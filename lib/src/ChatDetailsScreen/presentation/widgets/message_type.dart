@@ -29,7 +29,7 @@ class _MessageTypeState extends State<MessageType>  with ScreenUtils {
          onTap: () async {
           Navigator.pushNamed(context, RoutesName.imageDetailScreen, arguments: {'postUrl' :widget.message});
          },
-        child: Container(
+        child: SizedBox(
           width: super.screenWidthPercentage(context, 80),
           height: super.screenHeightPercentage(context, 20),
           child: ClipRRect(

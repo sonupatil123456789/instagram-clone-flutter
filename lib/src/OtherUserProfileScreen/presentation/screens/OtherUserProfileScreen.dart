@@ -8,8 +8,6 @@ import 'package:instagram_clone/src/Authantication/data/model/FollowModel.dart';
 import 'package:instagram_clone/src/Authantication/data/model/HiveUserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/FollowEntity.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
-import 'package:instagram_clone/src/DiscoverScreen/presentation/bloc/DiscoverBloc.dart';
-import 'package:instagram_clone/src/DiscoverScreen/presentation/bloc/DiscoverEvent.dart';
 import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/bloc/OtherUserBloc.dart';
 import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/bloc/OtherUserEvent.dart';
 import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/bloc/OtherUserState.dart';
@@ -276,7 +274,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen>
                                 if (state.currentState ==CurrentAppState.SUCCESS) {
                                   final otherPostList = state.postList;
                                   if (state.isUserFollowing) {
-                                    if (otherPostList!.isEmpty) {
+                                    if (otherPostList.isEmpty) {
                                       return Center(child: Text("No Post Yet",style: CoustomTextStyle.paragraph4));
                                     } else {
                                       return TabBarView(children: [

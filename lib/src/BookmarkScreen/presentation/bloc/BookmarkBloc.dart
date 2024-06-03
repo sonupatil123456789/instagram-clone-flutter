@@ -22,7 +22,7 @@ class BookmarkBloc extends Bloc<BookmarkEvent, BookmarkState> {
       })
       : super(BookmarkState(
           currentState: CurrentAppState.INITIAL,
-          bookmarkList: [],
+          bookmarkList: const [],
         )) {
 
           

@@ -14,7 +14,7 @@ import 'package:instagram_clone/utils/theams/text_theams.dart';
 import '../../../Authantication/domain/entity/UserEntity.dart';
 
 class SearchUserScreen extends StatefulWidget {
-  SearchUserScreen({super.key});
+  const SearchUserScreen({super.key});
 
   @override
   State<SearchUserScreen> createState() => _SearchUserScreenState();
@@ -123,7 +123,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> with ScreenUtils {
                           style: CoustomTextStyle.paragraph4));
                     }
 
-                    if (snapshot.data?.length == 0) {
+                    if (snapshot.data!.isEmpty) {
                       return Container(
                         height: 500,
                         alignment: Alignment.center,
