@@ -61,8 +61,7 @@ class UserListCard extends StatelessWidget with ScreenUtils {
                 child: CachedNetworkImage(
                   imageUrl: data?.profileImage ?? ImageResources.networkUserOne,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
+                  placeholder: (context, url) => CircularProgressIndicator(color: primaryShade500,),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),

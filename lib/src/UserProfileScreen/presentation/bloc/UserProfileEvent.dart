@@ -13,3 +13,13 @@ class GetMyPostEvent extends UserProfileEvent{
     required this.isRefresh,
   });
 }
+
+class DeletMyPostEvent extends UserProfileEvent{
+  BuildContext context;
+  String postId;
+
+  DeletMyPostEvent({
+    required this.context,
+    required this.postId,
+  });
+}

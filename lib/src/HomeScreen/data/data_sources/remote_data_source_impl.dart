@@ -103,8 +103,7 @@ class HomeScreenRemoteDataSourceImpl implements HomeScreenRemoteDataSource {
       List<String> followingUserUuid =
           following!.map((following) => following.uuid.toString()).toList();
 
-      Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshotStream =
-          postCollection.getUserSpecificPostsStream(followingUserUuid);
+      Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshotStream =postCollection.getUserSpecificPostsStream(followingUserUuid);
       Stream<List<PostModel>> userPostStream = querySnapshotStream.map(
           (event) =>
               event.docs.map((e) => PostModel.fromMap(e.data())).toList());

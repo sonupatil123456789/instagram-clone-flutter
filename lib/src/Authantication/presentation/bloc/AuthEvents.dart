@@ -21,6 +21,25 @@ class CreateAccountWithEmailPasswordEvent extends AuthEvents {
       required this.phoneNumber});
 }
 
+class UpdateUserInformationEvent extends AuthEvents {
+  BuildContext context;
+  String uniqueName;
+  String userName;
+  String birthdate;
+  String email;
+  String phoneNumber;
+  String profileImage;
+
+  UpdateUserInformationEvent(
+      {required this.uniqueName,
+      required this.context,
+      required this.userName,
+      required this.email,
+      required this.birthdate,
+      required this.profileImage,
+      required this.phoneNumber});
+}
+
 class LogInWithEmailPasswordEvent extends AuthEvents {
   BuildContext context;
   String password;
@@ -41,6 +60,12 @@ class ResetPasswordEvent extends AuthEvents {
   ResetPasswordEvent({
     required this.context,
     required this.email,
+  });
+}
+class SigneOutEvent extends AuthEvents {
+  BuildContext context;
+  SigneOutEvent({
+    required this.context,
   });
 }
 

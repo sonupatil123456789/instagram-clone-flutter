@@ -46,8 +46,11 @@ class _AddFilePreviewScreenState extends State<AddFilePreviewScreen> with Screen
 
   @override
   void dispose() {
-    _controller?.dispose();
+   
     super.dispose();
+    if ((widget.fileData.coustomfileType == CustomUploadFileType.Video)) {
+       _controller!.dispose();
+    }
   }
 
   @override
@@ -99,14 +102,14 @@ class _AddFilePreviewScreenState extends State<AddFilePreviewScreen> with Screen
                         style: CoustomTextStyle.paragraph1,
                       ),
                     ),
-                  )),
+                  )
+                  ),
             ),
 
             Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding:
-                      EdgeInsets.all(super.screenWidthPercentage(context, 6)),
+                  padding:EdgeInsets.all(super.screenWidthPercentage(context, 6)),
                   child: CoustomButton(
                     height: super.screenHeightPercentage(context, 6),
                     backgroundColor: primaryShade500,

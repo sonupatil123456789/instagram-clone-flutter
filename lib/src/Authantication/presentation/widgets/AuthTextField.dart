@@ -6,6 +6,7 @@ import 'package:instagram_clone/utils/theams/text_theams.dart';
 class AuthTextField extends StatefulWidget {
   double width;
   double? height;
+  List? coustomInputFormatters;
   late TextEditingController? controller;
   Function getTextFieldValue;
   Function validateTextField;
@@ -22,6 +23,7 @@ class AuthTextField extends StatefulWidget {
     required this.onPress,
     required this.touchDetecter,
     this.height,
+    this.coustomInputFormatters,
     this.keyboardType = TextInputType.text,
     required this.width,
     this.controller,
@@ -63,6 +65,7 @@ class _AuthTextFieldState extends State<AuthTextField>with ScreenUtils {
                 style: CoustomTextStyle.paragraph3,
                 autocorrect: true,
                 obscuringCharacter: "*",
+                inputFormatters: [],
                 obscureText: widget.isPassword == true && hidePassword == true ? true : false,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 textAlign: TextAlign.start,

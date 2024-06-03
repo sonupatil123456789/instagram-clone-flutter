@@ -45,8 +45,8 @@ class StatusStoryCard extends StatelessWidget with ScreenUtils {
                 child: CachedNetworkImage(
                   imageUrl: userStatus.profileImage ?? ImageResources.networkUserOne,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  placeholder: (context, url) =>  CircularProgressIndicator(color: primaryShade500,),
+                 errorWidget: (context, url, error) => Image.asset(ImageResources.localUserOne)
                 ),
               ),
             ),

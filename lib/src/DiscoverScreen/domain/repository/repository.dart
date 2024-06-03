@@ -7,7 +7,9 @@ abstract interface class DiscoverRepository {
 
 
  
-  Future<FollowModel> followUser(FollowEntity following );
+  // Future<FollowModel> followUser(FollowEntity following );
+
+  Future<bool> followUser(FollowEntity following );
 
 
 

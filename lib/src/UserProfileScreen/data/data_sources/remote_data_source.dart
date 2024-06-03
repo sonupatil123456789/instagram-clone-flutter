@@ -6,6 +6,8 @@ abstract interface class UserProfileScreenRemoteDataSource {
 
   Future<List<PostModel>> getMyPostPost(isRefresh);
 
+  Future<bool> deletUserPost(String postId );
+
 
 
 

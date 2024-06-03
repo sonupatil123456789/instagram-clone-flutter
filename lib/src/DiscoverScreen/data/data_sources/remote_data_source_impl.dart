@@ -20,7 +20,7 @@ class DiscoverRemoteDataSourceImpl implements DiscoverRemoteDataSource {
   FirebaseAuth get auth => userCollection.firebaseAuthInstance;
 
   @override
-  Future<FollowModel> followUser(FollowModel following) async {
+  Future<bool> followUser(FollowModel following) async {
     try {
 
       FollowModel follower = FollowModel(
@@ -33,12 +33,14 @@ class DiscoverRemoteDataSourceImpl implements DiscoverRemoteDataSource {
       if (querySnapshot.docs.isNotEmpty) {
         await userCollection.removeUserArrey(userModel!.uuid.toString(),"following", following.toMap());
         await userCollection.removeUserArrey(following.uuid.toString(),"followers", follower.toMap());
+        return false ;
       } else {
         await userCollection.updateUserArrey(userModel!.uuid.toString(),"following", following.toMap());
         await userCollection.updateUserArrey(following.uuid.toString(),"followers", follower.toMap());
+        return true ;
       }
 
-      return follower;
+      // return follower;
       } catch (error, stack) {
       CoustomLog.coustomLogError("followUser", error, stack);
       rethrow;

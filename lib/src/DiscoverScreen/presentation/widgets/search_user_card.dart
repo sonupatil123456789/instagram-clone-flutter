@@ -38,7 +38,7 @@ class SearchUserCard extends StatelessWidget with ScreenUtils {
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, RoutesName.chatDetailsScreen);
+        Navigator.pushNamed(context, RoutesName.otherUserProfileScreen , arguments: {'uuid': data!.uuid});
       },
       child: Container(
         width: super.screenWidthPercentage(context, 90),
@@ -63,9 +63,8 @@ class SearchUserCard extends StatelessWidget with ScreenUtils {
                 child: CachedNetworkImage(
                   imageUrl: data?.profileImage ?? ImageResources.networkUserOne,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                   placeholder: (context, url) => CircularProgressIndicator(color: primaryShade500,),
+                  errorWidget: (context, url, error) => Image.asset(ImageResources.localUserOne)
                 ),
               ),
             ),
@@ -119,8 +118,7 @@ class SearchUserCard extends StatelessWidget with ScreenUtils {
                   },
                   child: Container(
                     // width: screenWidthPercentage(context, 2),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenWidthPercentage(context, 3)),
+                    padding: EdgeInsets.symmetric( horizontal: screenWidthPercentage(context, 3)),
                     alignment: Alignment.center,
                     height: screenHeightPercentage(context, 3),
                     decoration: BoxDecoration(

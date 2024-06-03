@@ -8,6 +8,7 @@ import 'package:instagram_clone/src/AddPostScreen/domain/entity/LikeEntity.dart'
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/PostEntity.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/bloc/HomeBloc.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/bloc/HomeEvent.dart';
+import 'package:instagram_clone/src/HomeScreen/presentation/widgets/comment_user_post_bottomSheet.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/widgets/liked_user_post_bottomsheet.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/widgets/taged_user_post_bottomSheet.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
@@ -154,7 +155,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
                     color: black.withOpacity(0.8),
                   ),
                   child: Text(
-                    discription,
+                    widget.videoPost.postDiscription ?? '',
                     style: CoustomTextStyle.paragraph4.copyWith(color: white),
                   ),
                 ),
@@ -163,9 +164,10 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
 
             Align(
               alignment: Alignment.center,
-              child: AnimatedOpacity(opacity: showHideVideoControlls ? 0.0 : 1.0,
-              duration: const Duration(microseconds: 300),
-              child: playPauseControllers(context, isVideoPlaying)),
+              child: AnimatedOpacity(
+                  opacity: showHideVideoControlls ? 0.0 : 1.0,
+                  duration: const Duration(microseconds: 300),
+                  child: playPauseControllers(context, isVideoPlaying)),
             ),
 
             // size bar buttons
@@ -193,13 +195,23 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
                                 return LikedUserPostBottomSheet(
                                   likesList: widget.videoPost.likes,
                                 );
-                              });
+                              }
+                            );
                         }),
                     sideButtons(
                         context: context,
                         icon: ImageResources.message,
                         textData: '${0}',
-                        onTap: () {}),
+                        onTap: () {
+                            showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return CommentUserPostBottomSheet(
+                              postData: widget.videoPost,
+                            );
+                          });
+                        }),
                     sideButtons(
                         context: context,
                         icon: ImageResources.tag,
@@ -219,9 +231,6 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
               ),
             ),
 
-
-           
-
             // mute un mute switch
             Positioned(
               bottom: super.screenHeightPercentage(context, 12),
@@ -230,7 +239,7 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
                 onTap: () {
                   setState(() {
                     muteVolume = !muteVolume;
-                    _controller?.setVolume(muteVolume ? 0.0 : 1.0);
+                    _controller?.setVolume(muteVolume ? 1.0 : 0.0);
                   });
                 },
                 child: Container(
@@ -249,15 +258,15 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
               ),
             ),
 
-
-             Positioned(
-               top: super.screenHeightPercentage(context, 50),
+            Positioned(
+              top: super.screenHeightPercentage(context, 50),
               right: super.screenWidthPercentage(context, 20),
               child: Container(
                 alignment: Alignment.center,
+                // color: Colors.greenAccent,
                 width: super.screenWidthPercentage(context, 80),
                 height: super.screenHeightPercentage(context, 30),
-                child:  DoubleTapLikeButton(
+                child: DoubleTapLikeButton(
                   onDoubleTap: () {
                     context.read<HomeBloc>().add(LikePostEvent(
                         context: context,
@@ -279,14 +288,14 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
         // video is playing
         if (state == true) {
           setState(() {
-            showHideVideoControlls = false ;
+            showHideVideoControlls = false;
             _controller.pause();
           });
 
           isVideoPlaying = false;
         } else {
           setState(() {
-            showHideVideoControlls = true ;
+            showHideVideoControlls = true;
             _controller.play();
           });
           isVideoPlaying = true;
@@ -333,6 +342,4 @@ class _ReelCardSectionState extends State<ReelCardSection> with ScreenUtils {
   }
 }
 
-String discription = '''
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
-''';
+

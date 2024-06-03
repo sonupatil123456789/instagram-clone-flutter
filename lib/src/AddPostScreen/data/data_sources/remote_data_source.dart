@@ -14,11 +14,9 @@ abstract interface class PostRemoteDataSource {
 
 Future<bool> viewedStatus(ViewedStatusModel isStatusViewed , String userId);
 
-//  Future<List<StatusModel>> getAllFollowersStatusInfo(List<FollowModel> followers);
-
  Stream<List<UserStatusModel>> getAllStatus(List<FollowModel> followers);
 
-//  Future<UserStatusModel> getMyStatus();
+ Future<UserStatusModel> getMyStatus();
 
 
 

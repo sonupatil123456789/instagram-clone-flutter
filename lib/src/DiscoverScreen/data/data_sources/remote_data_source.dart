@@ -7,7 +7,8 @@ import 'package:instagram_clone/src/Authantication/data/model/FollowModel.dart';
 abstract interface class DiscoverRemoteDataSource {
 
 
- Future<FollowModel> followUser(FollowModel following );
+//  Future<FollowModel> followUser(FollowModel following );
+ Future<bool> followUser(FollowModel following );
 
 
 

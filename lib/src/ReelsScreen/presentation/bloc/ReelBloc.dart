@@ -21,8 +21,7 @@ class ReelBloc extends Bloc<ReelEvent, ReelState> {
       final videoPost = await getAllVideoPost.call(event.isRefresh, event.context);
       emit(state.copyWith( currentState: CurrentAppState.SUCCESS, videoPostList: videoPost ?? []));
     } catch (e) {
-      emit(state.copyWith(
-        currentState: CurrentAppState.ERROR,
+      emit(state.copyWith(currentState: CurrentAppState.ERROR,
       ));
     }
   }

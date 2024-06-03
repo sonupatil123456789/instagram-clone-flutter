@@ -31,7 +31,8 @@ class UserChatMessageModel extends UserChatMessageEntity {
         message: message ?? this.message,
         messageType: messageType ?? this.messageType,
         createdAt: createdAt ?? this.createdAt,
-        messageViewed: messageViewed ?? this.messageViewed);
+        messageViewed: messageViewed ?? this.messageViewed
+        );
   }
 
   factory UserChatMessageModel.fromEntity(UserChatMessageEntity entity) {

@@ -5,7 +5,8 @@ import 'package:instagram_clone/src/AddPostScreen/data/model/PostModel.dart';
 import 'package:instagram_clone/src/UserProfileScreen/data/data_sources/remote_data_source.dart';
 import 'package:instagram_clone/utils/screen_utils/logging_utils.dart';
 
-class UserProfileScreenRemoteDataSourceImpl implements UserProfileScreenRemoteDataSource {
+class UserProfileScreenRemoteDataSourceImpl
+    implements UserProfileScreenRemoteDataSource {
   FirebasePostCollection postCollection;
   PostModel postModel;
 
@@ -21,16 +22,17 @@ class UserProfileScreenRemoteDataSourceImpl implements UserProfileScreenRemoteDa
   FirebaseAuth get auth => postCollection.firebaseAuthInstance;
 
   @override
-  Future<List<PostModel>> getMyPostPost( isRefresh) async {
-     final userId = auth.currentUser?.uid;
+  Future<List<PostModel>> getMyPostPost(isRefresh) async {
+    final userId = auth.currentUser?.uid;
     try {
       if (!isFetched || isRefresh) {
         myPosts.clear();
-          querySnapshot = await postCollection.getUserSpecificPosts(userId.toString());
+        querySnapshot =
+            await postCollection.getUserSpecificPosts(userId.toString());
 
-          querySnapshot?.docs.forEach((element) {
-            myPosts.add(PostModel.fromMap(element.data() as Map<String, dynamic>));
-          });
+        querySnapshot?.docs.forEach((element) {
+          myPosts.add(PostModel.fromMap(element.data() as Map<String, dynamic>));
+        });
 
         CoustomLog.coustomLogData("getMyPostPost", myPosts.length.toString());
         isFetched = true;
@@ -44,7 +46,14 @@ class UserProfileScreenRemoteDataSourceImpl implements UserProfileScreenRemoteDa
     }
   }
 
+  @override
+  Future<bool> deletUserPost(String postId) async {
+    try {
+      querySnapshot = await postCollection.deletPostDocument(postId);
+      return true;
+    } catch (error, stack) {
+      CoustomLog.coustomLogError("deletUserPost", error, stack);
+      rethrow;
+    }
+  }
 }
-
-
-

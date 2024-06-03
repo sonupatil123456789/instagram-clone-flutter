@@ -4,17 +4,17 @@ import 'package:instagram_clone/src/DiscoverScreen/domain/repository/repository.
 import 'package:instagram_clone/utils/resources/use_case.dart';
 
 
-class FollowUserUsecase implements UseCase<FollowEntity?, FollowUserParams> {
+class FollowUserUsecase implements UseCase<bool, FollowUserParams> {
   DiscoverRepository reposatory;
 
   FollowUserUsecase(this.reposatory);
   
   @override
-  Future<FollowEntity?> call(FollowUserParams params, BuildContext context) async {
+  Future<bool> call(FollowUserParams params, BuildContext context) async {
       try {
       return await reposatory.followUser(params.following);
     } catch (e) {
-      return null;
+      rethrow ;
     }
   }
 

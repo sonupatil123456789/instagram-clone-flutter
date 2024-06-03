@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/components/like_heart.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
@@ -11,14 +10,15 @@ import 'package:instagram_clone/src/HomeScreen/presentation/bloc/HomeEvent.dart'
 import 'package:instagram_clone/src/HomeScreen/presentation/widgets/comment_user_post_bottomSheet.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/widgets/liked_user_post_bottomsheet.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/widgets/taged_user_post_bottomSheet.dart';
+import 'package:instagram_clone/src/BookmarkScreen/presentation/bloc/BookmarkBloc.dart';
+import 'package:instagram_clone/src/BookmarkScreen/presentation/bloc/BookmarkEvent.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';
+import 'package:instagram_clone/utils/routes/routes_name.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
 import 'package:instagram_clone/utils/theams/color_pallet.dart';
 import 'package:video_player/video_player.dart';
 import '../../utils/theams/text_theams.dart';
-
-
 
 class UserPostCard extends StatefulWidget {
   PostEntity postData;
@@ -84,27 +84,39 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
                 children: [
                   UserAvatar(
                     imageSize: super.screenWidthPercentage(context, 10),
-                    url:widget.postData.profileImage ?? ImageResources.networkUserOne,
-                    onPress: () {},
+                    url: widget.postData.profileImage ??
+                        ImageResources.networkUserOne,
+                    onPress: () {
+                      Navigator.pushNamed(
+                          context, RoutesName.otherUserProfileScreen,
+                          arguments: {'uuid': widget.postData.uuid});
+                    },
                     radious: 100.0,
                   ),
                   const SizedBox(
                     width: 10,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.postData.uniqueName ?? "",
-                        style: CoustomTextStyle.paragraph2
-                            .copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        widget.postData.location ?? "Unknown Location",
-                        style: CoustomTextStyle.paragraph5.copyWith(),
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, RoutesName.otherUserProfileScreen,
+                          arguments: {'uuid': widget.postData.uuid});
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.postData.uniqueName ?? "",
+                          style: CoustomTextStyle.paragraph2
+                              .copyWith(fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          widget.postData.location ?? "Unknown Location",
+                          style: CoustomTextStyle.paragraph5.copyWith(),
+                        )
+                      ],
+                    ),
                   ),
                   const Expanded(
                     child: SizedBox(
@@ -119,15 +131,24 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
                             _controller?.setVolume(muteVolume ? 0.0 : 1.0);
                           });
                         },
-                        icon: Icon( muteVolume ? Icons.volume_off : Icons.volume_up , size: 20,))
+                        icon: Icon(
+                          muteVolume ? Icons.volume_off : Icons.volume_up,
+                          size: 20,
+                        ))
                   ],
                   const SizedBox(
                     width: 10,
                   ),
-                  Image.asset(
-                    ImageResources.bookMark,
-                    width: 18,
-                    height: 18,
+                  GestureDetector(
+                    onTap: () {
+                      context.read<BookmarkBloc>().add(AddBookmarkEvent(
+                          bookmark: widget.postData, context: context));
+                    },
+                    child: Image.asset(
+                      ImageResources.bookMark,
+                      width: 18,
+                      height: 18,
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -155,7 +176,8 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
                           widget.postData,
                           _controller,
                           super.screenWidthPercentage(context, 100),
-                          super.screenHeightPercentage(context, 100)),
+                          super.screenHeightPercentage(context, 100),
+                          context),
                     ),
                     Visibility(
                       visible: showDiscription,
@@ -249,11 +271,13 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
                   ),
                   GestureDetector(
                     onTap: () {
-                       showModalBottomSheet<void>(
+                      showModalBottomSheet<void>(
                           context: context,
                           isScrollControlled: true,
                           builder: (BuildContext context) {
-                            return CommentUserPostBottomSheet(postData: widget.postData,);
+                            return CommentUserPostBottomSheet(
+                              postData: widget.postData,
+                            );
                           });
                     },
                     child: Image.asset(
@@ -298,36 +322,51 @@ class _UserPostCardState extends State<UserPostCard> with ScreenUtils {
 }
 
 Widget dynamicSocialMediaPost(
-  PostEntity post,
-  VideoPlayerController? controller,
-  double width,
-  double hight,
-) {
+    PostEntity post,
+    VideoPlayerController? controller,
+    double width,
+    double hight,
+    BuildContext context) {
   CustomUploadFileType fileType =
       CustomUploadFileTypeExtension.stringToEnum(post.postImageFileType!);
 
   if (fileType == CustomUploadFileType.Image) {
     return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RoutesName.imageDetailScreen,
+            arguments: {'postUrl': post.postImage});
+      },
       child: CachedNetworkImage(
         imageUrl: post.postImage ?? ImageResources.networkUserOne,
         height: hight * 0.44,
         width: width,
         fit: BoxFit.cover,
+        placeholder: (context, url) => Center(
+            child: CircularProgressIndicator(
+          color: primaryShade500,
+        )),
+        errorWidget: (context, url, error) =>
+            const Center(child: Icon(Icons.error)),
       ),
     );
   }
-  // if (fileType == CustomUploadFileType.Video) {
-  //   if (controller != null) {
-  //     return GestureDetector(
-  //       child: VideoPlayer(controller!),
-  //     );
-  //   }
+  if (fileType == CustomUploadFileType.Video) {
+    if (controller != null) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, RoutesName.videoDetailScreen,
+              arguments: {'postUrl': post.postImage});
+        },
+        child: VideoPlayer(controller!),
+      );
+    }
 
-  //   return CircularProgressIndicator(
-  //     color: primaryShade500,
-  //   );
-  // } 
-  else {
+    return Center(
+      child: CircularProgressIndicator(
+        color: primaryShade500,
+      ),
+    );
+  } else {
     return const Center(child: Icon(Icons.error));
   }
 }

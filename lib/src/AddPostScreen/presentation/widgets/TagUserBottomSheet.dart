@@ -24,18 +24,38 @@ class SearchUserToTagBottomSheet extends StatefulWidget {
 
 class _SearchUserToTagBottomSheetState extends State<SearchUserToTagBottomSheet>
     with ScreenUtils {
+
   String searchbar = "";
   Timer? _debounce;
+  late AuthBloc _authBloc;
+
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AuthBloc>().getAllUserStreamList(context , "");
+  }
+
+
+      @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _authBloc = context.read<AuthBloc>();
+    // _authBloc.state.userListStream = StreamController<List<UserEntity>>.broadcast();
+   
+  }
 
   @override
   void dispose() {
+    // _authBloc.state.userListStream.close();
     _debounce?.cancel();
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    // final postBloc = BlocProvider.of<PostBloc>(context).state;
+
 
     return Container(
       decoration: BoxDecoration(
@@ -75,18 +95,17 @@ class _SearchUserToTagBottomSheetState extends State<SearchUserToTagBottomSheet>
                       if (_debounce?.isActive ?? false) _debounce?.cancel();
                 
                       _debounce = Timer(const Duration(seconds: 2), () {
-                          setState(() {
+                          // setState(() {
                           searchbar = value;
+                          context.read<AuthBloc>().getAllUserStreamList(context, searchbar.toString() ?? "");
                         });
-                      });
+                      // });
                     },
                   )),
                 
               Expanded(
                 child: StreamBuilder(
-                  stream: context
-                      .read<AuthBloc>()
-                      .getStreamOfUserList(searchbar.toString() ?? "", context),
+                  stream: context.read<AuthBloc>().state.userListStream.stream,
                   builder: (BuildContext context,
                       AsyncSnapshot<List<UserEntity>?> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

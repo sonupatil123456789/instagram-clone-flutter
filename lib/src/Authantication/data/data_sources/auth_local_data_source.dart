@@ -7,5 +7,6 @@ abstract interface class LocalDataSource{
 
   Future saveUserDataToHiveDatabase(UserEntity entity) ;
   Future getUserDataFromHiveDatabase(String key) ;
+  Future deletDataFromHiveDatabase(String key) ;
   
 }

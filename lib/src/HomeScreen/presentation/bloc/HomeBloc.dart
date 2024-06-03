@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/CommentEntity.dart';
@@ -39,8 +41,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       : super(HomeState(
           currentState: CurrentAppState.INITIAL,
           postList: [],
-          replayCommentList: [], replyedTo: null, comment: null,
+          replayCommentList: [], replyedTo: null, comment: null, postListStream: StreamController<List<PostEntity>>.broadcast(),
+           postCommentListStream: StreamController<List<CommentsEntity>>.broadcast(),
         )) {
+
+          
     on<GetAllFriendsPostEvent>(_getAllFriendsPostEvent);
     on<GetAllPostEvent>(_getAllPostEvent);
     on<LikePostEvent>(_likePostEvent);
@@ -82,22 +87,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Stream<List<PostEntity>> getAllFriendsPostStreamEvent(
-      BuildContext context, List<FollowEntity>? following, bool isRefresh) {
-
-    if(following != [] || following != null){
-        return getAllFriendsPostStream.call(
-          GetAllFriendsPostParams(following: following== null? [] : following, isRefresh: isRefresh),
-          context);
-    }
-    else {
-      return Stream.empty();
+  getAllFriendsPostStreamEvent(BuildContext context, List<FollowEntity>? following, bool isRefresh) {
+    try {
+      if (following != [] || following != null) {
+        getAllFriendsPostStream.call(GetAllFriendsPostParams(following: following ?? [], isRefresh: isRefresh),context).listen((event) {
+          state.postListStream.sink.add(event);
+        }).onError((error) {
+          state.postListStream.sink.addError(error);
+        });
+      }
+       state.postListStream.sink.add([]);
+    } catch (error) {
+      state.postListStream.sink.addError(error);
     }
   }
 
-  Stream<List<CommentsEntity>> getAllPostCommmentsStreamEvent(
-      context, String postId) {
-    return getAllPostCommentsStream.call(postId, context);
+   getAllPostCommmentsStreamEvent(context, String postId) {
+      try {
+     getAllPostCommentsStream.call(postId, context).listen((event) {
+          state.postCommentListStream.sink.add(event);
+        }).onError((error) {
+          state.postCommentListStream.sink.addError(error);
+        });
+    } catch (error) {
+      state.postCommentListStream.sink.addError(error);
+    }
   }
 
   _likePostEvent(LikePostEvent event, Emitter<HomeState> emit) async {
@@ -108,7 +122,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   _postCommentReplyEvent(PostCommentReplyEvent event, Emitter<HomeState> emit) async {
      CoustomLog.coustomLogData("Comment",event.comment.toString());
-    //  FocusScope.of(event.context).unfocus();
     await postCommentReply.call(PostCommentReplyParams(postId: event.postId, comment: event.comment),event.context);
   }
 

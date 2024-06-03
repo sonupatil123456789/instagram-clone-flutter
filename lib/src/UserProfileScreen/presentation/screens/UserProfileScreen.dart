@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
-import 'package:instagram_clone/src/Authantication/data/model/HiveUserModel.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
+import 'package:instagram_clone/src/BookmarkScreen/presentation/screens/BookmarkScreen.dart';
+import 'package:instagram_clone/src/SettingsScreen/presentation/screens/SettingsScreen.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileBloc.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileEvent.dart';
-import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/getMyPostState.dart';
+import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileState.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/widgets/All.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/widgets/MyPost.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/widgets/MyReels.dart';
+import 'package:instagram_clone/src/UserProfileScreen/presentation/widgets/follower_following_bottomSheet.dart';
 import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
@@ -27,18 +28,12 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen>
-    with ScreenUtils {
+class _UserProfileScreenState extends State<UserProfileScreen> with ScreenUtils {
   UserEntity userData = UserModel();
 
   initialise(BuildContext context, bool refresh) async {
-    await context.read<AuthBloc>().getUserDetails(context, refresh);
-    Box<HiveUserModel> userDataBase = Hive.box<HiveUserModel>('UserDataBase');
-    userData = HiveUserModel.toEntity(userDataBase.get("User"));
-    context
-        .read<UserProfileBloc>()
-        .add(GetMyPostEvent(context: context, isRefresh: refresh));
-    // setState(() {});
+    userData = await context.read<AuthBloc>().getUserDetails(context, refresh);
+    context.read<UserProfileBloc>().add(GetMyPostEvent(context: context, isRefresh: refresh));
   }
 
   @override
@@ -46,6 +41,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
     super.initState();
     initialise(context, false);
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +71,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                   children: [
                     UserAvatar(
                       imageSize: super.screenWidthPercentage(context, 25),
-                      url:  userData.profileImage ?? ImageResources.networkUserOne,
+                      url: userData.profileImage ??ImageResources.networkUserOne,
                       onPress: () {},
                       radious: 100.0,
                     ),
@@ -82,7 +79,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       height: super.screenWidthPercentage(context, 5),
                     ),
                     Text(
-                      userData.userName ?? "No Data",
+                      "@ ${userData.uniqueName} " ?? "No Data",
                       style: CoustomTextStyle.paragraph1
                           .copyWith(fontWeight: FontWeight.w500, color: grey2),
                     ),
@@ -90,8 +87,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       height: 8,
                     ),
                     Text(
-                       userData.uniqueName ?? "No Data",
-                      style: CoustomTextStyle.paragraph2.copyWith(color: grey4),
+                      "${userData.email}" ?? "No Data",
+                      style: CoustomTextStyle.paragraph3.copyWith(color: grey4),
                     ),
                     SizedBox(
                       height: super.screenWidthPercentage(context, 5),
@@ -100,11 +97,37 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          userInfo('My Posts', context.watch<UserProfileBloc>().state.myPostList?.length.toString() ?? "0"),
-                          userInfo('Followers',
-                              "${userData.followers?.length ?? 0}"),
-                          userInfo('Following',
-                              "${userData.following?.length ?? 0}"),
+                          userInfo(
+                              'My Posts',
+                              context.watch<UserProfileBloc>().state.myPostList?.length.toString() ??
+                                  "0"),
+                          GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return FollowingFollowersBottomSheet(
+                                        followingFollowers: userData.followers ?? [],
+                                        title: 'Followers',
+                                      );
+                                    });
+                              },
+                              child: userInfo('Followers',
+                                  "${userData.followers?.length ?? 0}")),
+                          GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return FollowingFollowersBottomSheet(
+                                        followingFollowers: userData.following ?? [],
+                                        title: 'Following',
+                                      );
+                                    });
+                              },
+                              child: userInfo('Following', "${userData.following?.length ?? 0}")),
                         ],
                       ),
                     ),
@@ -112,7 +135,12 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                       height: super.screenWidthPercentage(context, 5),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (BuildContext context) { 
+                          return const SettingsScreen();
+                         }));
+                      },
                       child: Container(
                         // width: super.screenWidthPercentage(context, 70),
                         decoration: BoxDecoration(
@@ -121,7 +149,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         alignment: Alignment.center,
                         height: super.screenWidthPercentage(context, 10),
                         child: Text(
-                          "Edit Profile",
+                          "Settings",
                           style: CoustomTextStyle.paragraph3,
                         ),
                       ),
@@ -175,18 +203,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                         ),
                         Expanded(
                           child: BlocBuilder<UserProfileBloc, UserProfileState>(
+                            buildWhen: (previous, current) => previous.currentState != current.currentState,
                             builder: (context, state) {
                               if (state.currentState == CurrentAppState.ERROR) {
-                                return const Center(
-                                  child: Text("Some Error Occured"),
+                                return  Center(
+                                  child: Text("Some Error Occured" ,  style: CoustomTextStyle.paragraph4),
                                 );
                               }
 
-                              if (state.currentState ==
-                                  CurrentAppState.SUCCESS) {
+                              if (state.currentState == CurrentAppState.SUCCESS) {
                                 if (state.myPostList!.isEmpty) {
-                                  return const Center(
-                                    child: Text("No Post Yet"),
+                                  return  Center(
+                                    child: Text("No Post Yet" , style: CoustomTextStyle.paragraph4),
                                   );
                                 } else {
                                   return TabBarView(children: [
@@ -202,7 +230,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                   ]);
                                 }
                               }
-
                               return Center(
                                 child: CircularProgressIndicator(
                                   color: primaryShade500,
@@ -224,21 +251,62 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
   Widget userInfo(String infoType, String infoData) {
-    return Column(
-      children: [
-        Text(
-          infoType,
-          style: CoustomTextStyle.paragraph3.copyWith(color: grey4),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Text(
-          infoData,
-          style: CoustomTextStyle.paragraph2
-              .copyWith(fontWeight: FontWeight.w500, color: grey2),
-        ),
-      ],
+    return SizedBox(
+      child: Column(
+        children: [
+          Text(
+            infoType,
+            style: CoustomTextStyle.paragraph3.copyWith(color: grey4),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            infoData,
+            style: CoustomTextStyle.paragraph2
+                .copyWith(fontWeight: FontWeight.w500, color: grey2),
+          ),
+        ],
+      ),
     );
   }
+
 }
+
+
+
+
+Future<dynamic> deletPost(String postId ,BuildContext context ){
+  return showDialog(
+    context:context ,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: primaryShade50,
+        title: Text(
+          'Delete Confirmation',
+          style: CoustomTextStyle.paragraph1,
+        ),
+        content: Text('Are you sure you want to delete comment . After deleting we cannot cancell the deletion ?', style: CoustomTextStyle.paragraph4,),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+              child:  Text('Delet', style: CoustomTextStyle.paragraph3.copyWith(color: primaryShade500),),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child:  Text('Cancel', style: CoustomTextStyle.paragraph3,),
+          ),
+        ],
+      );
+    },
+  ).then((confirmed) {
+    if (confirmed == true) {
+      context.read<UserProfileBloc>().add(DeletMyPostEvent(context: context, postId: postId));
+    } else {}
+  });
+}
+

@@ -4,33 +4,34 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone/src/Authantication/data/model/FollowModel.dart';
-
-import 'package:instagram_clone/src/Authantication/domain/entity/FollowEntity.dart';
 import 'package:instagram_clone/utils/resources/enums.dart';
 
 @immutable
 class DiscoverState extends Equatable {
-  late FollowEntity follow = FollowModel() ;
+  // late FollowEntity follow = FollowModel() ;
   CurrentAppState? currentState;
+  bool isFollowing ;
 
   DiscoverState({
     this.currentState,
-    required this.follow,
+    // required this.follow,
+    required this.isFollowing,
   });
 
   DiscoverState copyWith({
     CurrentAppState? currentState,
-    FollowEntity? follow
+    // FollowEntity? follow,
+    bool? isFollowing
   }) {
     return DiscoverState(
         currentState: currentState ?? this.currentState,
-        follow: follow ?? this.follow,
+        // follow: follow ?? this.follow, 
+        isFollowing: isFollowing ?? this.isFollowing,
        );
   }
 
 
 
   @override
-  List<Object?> get props => [follow, currentState];
+  List<Object?> get props => [ currentState , isFollowing];
 }

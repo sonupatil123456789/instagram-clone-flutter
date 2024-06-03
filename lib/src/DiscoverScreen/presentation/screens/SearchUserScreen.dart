@@ -23,9 +23,27 @@ class SearchUserScreen extends StatefulWidget {
 class _SearchUserScreenState extends State<SearchUserScreen> with ScreenUtils {
   String searchbar = "";
   Timer? _debounce;
+  late AuthBloc _authBloc;
+
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AuthBloc>().getAllUserStreamList(context , "");
+  }
+
+
+      @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _authBloc = context.read<AuthBloc>();
+    // _authBloc.state.userListStream = StreamController<List<UserEntity>>.broadcast();
+   
+  }
 
   @override
   void dispose() {
+    // _authBloc.state.userListStream.close();
     _debounce?.cancel();
     super.dispose();
   }
@@ -76,21 +94,19 @@ class _SearchUserScreenState extends State<SearchUserScreen> with ScreenUtils {
                     if (_debounce?.isActive ?? false) _debounce?.cancel();
 
                     _debounce = Timer(const Duration(seconds: 2), () {
-                      setState(() {
+                      // setState(() {
                         searchbar = value;
+                        context.read<AuthBloc>().getAllUserStreamList(context, searchbar.toString() ?? "");
                       });
-                    });
+                    // });
                   },
                 ),
               ),
 
               Expanded(
                 child: StreamBuilder(
-                  stream: context
-                      .read<AuthBloc>()
-                      .getStreamOfUserList(searchbar.toString() ?? "", context),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<UserEntity>?> snapshot) {
+                  stream: context.read<AuthBloc>().state.userListStream.stream,
+                  builder: (BuildContext context,AsyncSnapshot<List<UserEntity>?> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(
@@ -104,7 +120,7 @@ class _SearchUserScreenState extends State<SearchUserScreen> with ScreenUtils {
                           height: 500,
                           alignment: Alignment.center,
                           child: Text("Some Error Occured",
-                              style: CoustomTextStyle.paragraph4));
+                          style: CoustomTextStyle.paragraph4));
                     }
 
                     if (snapshot.data?.length == 0) {
@@ -133,7 +149,8 @@ class _SearchUserScreenState extends State<SearchUserScreen> with ScreenUtils {
                                       uniqueName: userToFollow.uniqueName,
                                       uuid: userToFollow.uuid,
                                       profileImage: userToFollow.profileImage),
-                                ));
+                                ),
+                              );
                           },
                           index: index,
                         );

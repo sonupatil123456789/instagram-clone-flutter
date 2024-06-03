@@ -15,14 +15,13 @@ class LoginUsecase implements UseCase<UserEntity?, LogInParams> {
     try {
       var data = await repository.logInWithEmailIdPassword(params);
       if (data != null) {
-        Navigator.pushNamedAndRemoveUntil(context,
-        RoutesName.mainSectionScreen, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context,RoutesName.mainSectionScreen, (route) => false);
       } 
       return data;
     } on FirebaseAuthException catch (error , stack) {
-        CoustomFirebaseException().firebasePhoneAuthExceptionHandler(context, error.code);
-       return null;
-    } catch (error , stack ) {
+      CoustomFirebaseException().firebasePhoneAuthExceptionHandler(context, error.code);
+      return null;
+    } catch (error , stack) {
        return null;
     }
   }

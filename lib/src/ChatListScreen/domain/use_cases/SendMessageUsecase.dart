@@ -14,10 +14,12 @@ class SendMessageUsecase implements UseCase<bool, SendMessageParams> {
     try {
       final messageSend = await reposatory.sendMessage(params.sender!, params.reciver !,params.messageData! );
       if (messageSend) {
+        // Navigator.pop(context);
         return true ;
       } else {
         throw "Unable To Send Message";
       }
+      
     } catch (e) {
       return false ;  
     }

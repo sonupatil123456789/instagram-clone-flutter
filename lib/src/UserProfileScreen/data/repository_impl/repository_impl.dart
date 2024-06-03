@@ -14,6 +14,11 @@ class UserProfileScreenRepositoryImpl implements UserProfileScreenRepository {
     return await userProfileScreenRemoteDataSource.getMyPostPost(isRefresh);
   
   }
+  
+  @override
+  Future<bool> deletUserPost(String postId) async {
+    return await userProfileScreenRemoteDataSource.deletUserPost(postId);
+  }
 
  
 }

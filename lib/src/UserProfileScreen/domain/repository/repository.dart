@@ -8,4 +8,6 @@ abstract interface class UserProfileScreenRepository {
 
   Future<List<PostEntity>> getMyPostPost(isRefresh) ;
 
+   Future<bool> deletUserPost(String postId );
+
 }

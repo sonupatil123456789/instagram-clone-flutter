@@ -1,6 +1,8 @@
 
 
 
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,8 @@ class HomeState extends Equatable {
   List<CommentsEntity>? replayCommentList = [];
   CommentsEntity? comment;
   ReplyedTo? replyedTo;
+  StreamController<List<PostEntity>> postListStream ;
+  StreamController<List<CommentsEntity>> postCommentListStream ;
 
 
 
@@ -25,6 +29,8 @@ class HomeState extends Equatable {
     required this.comment,
     required this.replayCommentList,
     required this.postList,
+    required this.postListStream,
+    required this.postCommentListStream,
   });
 
   HomeState copyWith({
@@ -33,6 +39,8 @@ class HomeState extends Equatable {
     List<CommentsEntity>?  replayCommentList,
     CommentsEntity? comment,
     ReplyedTo? replyedTo,
+     StreamController<List<PostEntity>>? postListStream ,
+     StreamController<List<CommentsEntity>>? postCommentListStream 
   }) {
     return HomeState(
       currentState: currentState ?? this.currentState,
@@ -40,6 +48,8 @@ class HomeState extends Equatable {
       replayCommentList: replayCommentList ?? this.replayCommentList,
       comment: comment ?? this.comment,
       replyedTo: replyedTo ?? this.replyedTo,
+       postListStream: postListStream ?? this.postListStream,
+       postCommentListStream: postCommentListStream ?? this.postCommentListStream,
     );
   }
 

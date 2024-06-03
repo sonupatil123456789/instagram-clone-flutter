@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,8 +7,12 @@ import 'package:instagram_clone/components/cards/status_story_card.dart';
 import 'package:instagram_clone/components/cards/status_story_slider.dart';
 import 'package:instagram_clone/components/cards/user_posts_card.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
+import 'package:instagram_clone/core/permissions/permission_handlers.dart';
 import 'package:instagram_clone/src/AddPostScreen/data/model/LikeModel.dart';
+import 'package:instagram_clone/src/AddPostScreen/domain/entity/CommentEntity.dart';
+import 'package:instagram_clone/src/AddPostScreen/domain/entity/UserStatusEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/presentation/bloc/PostBloc.dart';
+import 'package:instagram_clone/src/AddPostScreen/presentation/bloc/PostEvents.dart';
 import 'package:instagram_clone/src/AddPostScreen/presentation/bloc/PostState.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
@@ -37,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
   late AppLifecycleListener _listener;
   UserEntity userData = UserModel();
   LikeModel likePost = LikeModel();
+  late HomeBloc _homeBloc ;
+  late PostBloc _postBloc ;
 
   void _onStateChanged(AppLifecycleState state) {
     switch (state) {
@@ -57,13 +65,13 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
 
   initialise(BuildContext context, bool refresh) async {
     userData = await context.read<AuthBloc>().getUserDetails(context, refresh);
-    // context.read<PostBloc>().add(GetMyStatusEvent(context: context));
-
     likePost = likePost.copyWith(
         uniqueName: userData!.uniqueName,
         profileImage: userData!.profileImage,
         uuid: userData!.uuid);
-    setState(() {});
+    context.read<HomeBloc>().getAllFriendsPostStreamEvent(context, userData.following, refresh);
+    context.read<PostBloc>().getFollowersStatusStreamEvent(context, userData.following ?? []);
+    await PermissionHandling.requestAllServicesPermissions();
   }
 
 
@@ -77,8 +85,26 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
     );
   }
 
+
+  
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _homeBloc = context.read<HomeBloc>();
+    _homeBloc.state.postCommentListStream = StreamController<List<CommentsEntity>>.broadcast();
+    _homeBloc.state.postListStream =StreamController<List<PostEntity>>.broadcast();
+    _postBloc = context.read<PostBloc>();
+    _postBloc.state.friendsStatusListStream = StreamController<List<UserStatusEntity>>.broadcast();
+    context.read<PostBloc>().add(GetMyStatusEvent(context: context));
+  
+
+  }
+
   @override
   void dispose() {
+    // _homeBloc.state.postCommentListStream.close();
+    // _homeBloc.state.postListStream.close();
+    // _postBloc.state.friendsStatusListStream.close();
     _listener.dispose();
     super.dispose();
   }
@@ -95,8 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
             Container(
               width: super.screenWidthPercentage(context, 100),
               height: super.screenHeightPercentage(context, 6),
-              padding: EdgeInsets.symmetric(
-                  horizontal: super.screenWidthPercentage(context, 6)),
+              padding: EdgeInsets.symmetric( horizontal: super.screenWidthPercentage(context, 6)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -149,18 +174,17 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                               child: BlocBuilder<PostBloc, PostState>(
                                 builder: (context, state) {
                                   return UserAvatar(
-                                    imageSize: super
-                                        .screenWidthPercentage(context, 10),
-                                    url: userData.profileImage ??
-                                        ImageResources.networkUserOne,
+                                    imageSize: super.screenWidthPercentage(context, 10),
+                                    url: userData.profileImage ??ImageResources.networkUserOne,
                                     onLongPress: () {
-                                      // Navigator.push(context, MaterialPageRoute(
-                                      //     builder: (BuildContext context) {
-                                      //   return StatusStorySlider(
-                                      //     statusList: state.userStatus.statusList!,
-                                      //     userId: state.userStatus.uuid!,
-                                      //   );
-                                      // }));
+                                     
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                        return StatusStorySlider(
+                                          statusList: state.userStatus.statusList!,
+                                           userStatusId: state.userStatus.uuid!,
+                                        );
+                                      }));
                                     },
                                     onPress: () async {
                                       uploadStatus(context);
@@ -186,13 +210,9 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                         ),
                         Expanded(
                           child: StreamBuilder(
-                              stream: context
-                                  .read<PostBloc>()
-                                  .getFollowersStatusStreamEvent(
-                                      context, userData.following ?? []),
+                              stream: context.read<PostBloc>().state.friendsStatusListStream.stream,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
                                   return Center(
                                     child: CircularProgressIndicator(
                                       color: primaryShade500,
@@ -200,13 +220,12 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                                   );
                                 }
 
-                                if (snapshot.connectionState ==
-                                    ConnectionState.active) {
+                                if (snapshot.connectionState ==ConnectionState.active) {
                                   if (snapshot.data?.length == 0) {
                                     return Container(
                                       alignment: Alignment.center,
                                       child: Text(
-                                        "No Post Yet",
+                                        "No Status Yet",
                                         style: CoustomTextStyle.paragraph4,
                                       ),
                                     );
@@ -219,18 +238,21 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder:(BuildContext context, int index) {
                                       final statusData = value![index];
+
+                                      if (statusData.statusList!.isEmpty) {
+                                        return null;
+                                      }
+
                                       return StatusStoryCard(
                                         userStatus: statusData,
                                         onPress: () {
                                           Navigator.push(context, MaterialPageRoute(builder:(BuildContext context) {
-                                            return StatusStorySlider(
-                                                statusList: statusData.statusList!, userStatusId: statusData.uuid!,);
+                                            return StatusStorySlider(statusList: statusData.statusList!, userStatusId: statusData.uuid!,);
                                           }));
                                         },
                                       );
                                     },
-                                    separatorBuilder:
-                                        (BuildContext context, int index) {
+                                    separatorBuilder:(BuildContext context, int index) {
                                       return const SizedBox(
                                         width: 6,
                                       );
@@ -257,14 +279,10 @@ class _HomeScreenState extends State<HomeScreen> with ScreenUtils {
                     width: super.screenWidthPercentage(context, 100),
                     height: super.screenHeightPercentage(context, 70),
                     child: StreamBuilder(
-                      stream: context
-                          .read<HomeBloc>()
-                          .getAllFriendsPostStreamEvent(
-                              context, userData.following, false),
+                      stream: context.read<HomeBloc>().state.postListStream.stream,   
                       builder: (BuildContext context,
                           AsyncSnapshot<List<PostEntity>> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState ==ConnectionState.waiting) {
                           return Center(
                             child: CircularProgressIndicator(
                               color: primaryShade500,

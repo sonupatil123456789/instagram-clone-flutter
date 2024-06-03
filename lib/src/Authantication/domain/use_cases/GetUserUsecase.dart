@@ -16,7 +16,7 @@ class GetUserUsecase implements UseCase<UserEntity, bool> {
     } on FirebaseException catch (error, stack) {
        rethrow;
     } catch (error, stack) {
-       rethrow;
+      rethrow;
     }
   }
 }

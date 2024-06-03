@@ -22,6 +22,11 @@ class FirebaseUserCollection extends FirebaseServiceProvider {
     return await databasePath().doc(pathid).set(user);
   }
 
+  Future updateUserDocument(pathid, user) async {
+    return await databasePath().doc(pathid).update(user);
+  }
+
+
   Future getAllUserDocument() async {
     return await databasePath().get();
   }
@@ -37,10 +42,6 @@ class FirebaseUserCollection extends FirebaseServiceProvider {
       return dataBase.collection('Users').where("uuid" , whereIn:following ).snapshots();
   }
 
-
-  Future updateUserDocument(pathid, user) async {
-    return await databasePath().doc(pathid).update(user);
-  }
 
   Future updateUserArrey(String pathid, String field ,Map<String,dynamic> data) async {
     return await databasePath().doc(pathid).update({
@@ -60,6 +61,10 @@ class FirebaseUserCollection extends FirebaseServiceProvider {
 
   Future<DocumentSnapshot> getUserDocument(pathid) async {
     return await databasePath().doc(pathid).get();
+  }
+
+  Stream<DocumentSnapshot> getUserDocumentStream(pathid)  {
+    return databasePath().doc(pathid).snapshots();
   }
   
 

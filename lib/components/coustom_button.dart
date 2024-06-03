@@ -42,7 +42,8 @@ class CoustomButton extends StatelessWidget {
         child: Text(
           text,
           style: CoustomTextStyle.paragraph2.copyWith(
-            color: textColor?? white
+            color: textColor?? white,
+            fontSize: 15
           ),
         ),
       ),

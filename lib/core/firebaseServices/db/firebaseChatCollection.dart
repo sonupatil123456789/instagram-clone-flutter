@@ -27,12 +27,23 @@ class FirebaseChatCollection extends FirebaseServiceProvider {
     return await dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).set(lastMessage);
   }
 
+  Future<DocumentSnapshot>getLastMessageDocument(String senderId ,String reciverId ) async {
+    return await dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).get();
+  }
+  updateLastMessageDocument(String senderId ,String reciverId ,Map<String,dynamic> data ) async {
+    return await dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).update(data);
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getUserConversationListStream(String senderId ,String reciverId) {
-      return  dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).collection("Messages").orderBy("createdAt",descending: false).snapshots();
+      return  dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).collection("Messages").orderBy("createdAt",descending: true).snapshots();
   }
 
   Future updateMessageDocument(String senderId ,String reciverId , String messageId , Map<String,dynamic> message) async {
     return await dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).collection("Messages").doc(messageId).update(message);
+  }
+
+  Future deletMessageDocument(String senderId ,String reciverId , String messageId ) async {
+    return await dataBase.collection('Chat').doc(senderId).collection("ChatInfo").doc(reciverId).collection("Messages").doc(messageId).delete();
   }
 
 

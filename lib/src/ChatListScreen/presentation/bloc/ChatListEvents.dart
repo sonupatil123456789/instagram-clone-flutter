@@ -39,6 +39,34 @@ class ViewedMessageEvent extends  ChatListEvents{
   });
 
 }
+class ViewedLastMessageEvent extends  ChatListEvents{
+  BuildContext context ;
+   String senderId;
+   String reciverId;
+
+
+  ViewedLastMessageEvent({
+    required this.context,
+    required this.senderId,
+    required this.reciverId,
+  });
+
+}
+class DeletMessageEvent extends  ChatListEvents{
+  BuildContext context ;
+   String senderId;
+   String reciverId;
+   String messageId;
+
+
+  DeletMessageEvent({
+    required this.context,
+    required this.senderId,
+    required this.reciverId,
+    required this.messageId,
+  });
+
+}
 
 
 

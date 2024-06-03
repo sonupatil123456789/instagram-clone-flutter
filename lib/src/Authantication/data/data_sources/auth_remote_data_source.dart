@@ -14,4 +14,10 @@ abstract interface class RemoteDataSource {
   Stream<List<UserModel>> getAllUserStreamList(String searchQuery);
 
   void isUserOnline(bool isOnline);
+
+  Future<bool> signeOutUser();
+  
+  Future<bool> updateUserInformation(UserModel updatedUserInfo);
+
+
 }

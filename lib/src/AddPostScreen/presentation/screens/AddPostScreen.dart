@@ -42,8 +42,7 @@ class _AddPostScreenState extends State<AddPostScreen> with ScreenUtils {
                         iconImage: ImageResources.camera,
                         size: super.screenWidthPercentage(context, 30),
                         onTap: () async {
-                          final imageData = await InputFielUtils.getMyFile(
-                              [], FileType.image, CustomUploadFileType.Image);
+                          final imageData = await InputFielUtils.getMyFile([], FileType.image, CustomUploadFileType.Image);
                           if (imageData != null) {
                             Navigator.pushNamed(context, RoutesName.addFilePreviewScreen, arguments: {"fileData" :imageData,"navigateToScreen" :RoutesName.addPostDetailsScreen});
                           } else {}

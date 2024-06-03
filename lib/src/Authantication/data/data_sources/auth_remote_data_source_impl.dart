@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:instagram_clone/core/firebaseServices/db/firebaseBookmarkCollection.dart';
+import 'package:instagram_clone/core/firebaseServices/db/firebaseNotificationCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebaseStatusCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebaseUserCollection.dart';
-import 'package:instagram_clone/src/AddPostScreen/data/model/UserStatusModel.dart';
+import 'package:instagram_clone/core/firebaseServices/storage/storageBucket.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
+import 'package:instagram_clone/utils/resources/Image_resources.dart';
 import 'package:instagram_clone/utils/screen_utils/logging_utils.dart';
 import 'auth_remote_data_source.dart';
 
@@ -11,22 +14,29 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   FirebaseUserCollection userCollection;
   UserModel userModel;
   FirebaseStatusCollection statusCollection;
+  FirebaseBookmarkCollection bookmarkCollection;
+  FirebaseNotificationCollection notificationCollection;
+   StorageBucket storage;
 
   RemoteDataSourceImpl(
     this.userCollection,
     this.userModel,
     this.statusCollection,
-
+    this.bookmarkCollection,
+    this.notificationCollection,
+    this.storage,
   );
 
   FirebaseAuth get auth => userCollection.firebaseAuthInstance;
   UserCredential? _credential;
+  final image = ImageResources.networkUserOne;
   bool isFetched = false;
 
   @override
   Future<UserModel> creatAcountWithEmailIdPassword(UserModel user) async {
     try {
-      _credential = await auth.createUserWithEmailAndPassword(email: user.email!, password: user.password!);
+      _credential = await auth.createUserWithEmailAndPassword(
+          email: user.email!, password: user.password!);
 
       final token = await _credential!.user!.getIdToken();
 
@@ -35,6 +45,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           email: user.email,
           userName: user.userName,
           password: user.password,
+          profileImage: image,
           phoneNumber: user.phoneNumber,
           followers: [],
           following: [],
@@ -46,7 +57,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       // CoustomLog.coustomLogData("creatAcountWithEmailIdPassword", userModel);
 
-      await userCollection.setUserDocument( _credential!.user!.uid.toString(), userModel.toMap());
+      await userCollection.setUserDocument(
+          _credential!.user!.uid.toString(), userModel.toMap());
+
+      final data = {
+        'uuid': userModel.uuid,
+        'uniqueName': userModel.uniqueName,
+        'profileImage': userModel.profileImage,
+      };
+
+      await initalizeUser(userModel.uuid!, data);
 
       CoustomLog.coustomLogData("creatAcountWithEmailIdPassword", userModel.toMap().toString());
 
@@ -60,7 +80,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   @override
   Future<UserModel> logInWithEmailIdPassword(UserModel user) async {
     try {
-      _credential = await auth.signInWithEmailAndPassword(email: user.email!, password: user.password!);
+      _credential = await auth.signInWithEmailAndPassword(
+          email: user.email!, password: user.password!);
 
       await userCollection
           .updateUserDocument(_credential!.user!.uid.toString(), {
@@ -72,17 +93,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       final value = docSnapshot.data() as Map<String, dynamic>;
       userModel = UserModel.fromMap(value);
 
-      
-      await FirebaseStatusCollection().setStatusDocument( userModel.uuid!,UserStatusModel(
-        uuid: userModel.uuid,
-        uniqueName: userModel.uniqueName,
-        profileImage: userModel.profileImage,
-        statusList: []
-      ).toMap());
+      CoustomLog.coustomLogData("logInWithEmailIdPassword", userModel);
 
-    CoustomLog.coustomLogData("logInWithEmailIdPassword", userModel);
-
-    return userModel;
+      return userModel;
     } catch (error, stack) {
       CoustomLog.coustomLogError("LogInWithEmailIdPassword", error, stack);
       rethrow;
@@ -134,7 +147,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       Stream<QuerySnapshot<Map<String, dynamic>>> userList =
           userCollection.getAllUserDocumentRealTime(searchQuery, userId);
       Stream<List<UserModel>> mappedStream = userList.map((event) =>
-      event.docs.map((e) => UserModel.fromMap(e.data())).toList());
+          event.docs.map((e) => UserModel.fromMap(e.data())).toList());
       CoustomLog.coustomLogData("getAllUserStreamList", mappedStream);
       return mappedStream;
     } catch (error, stack) {
@@ -147,19 +160,64 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<UserModel> getUser(bool isRefresh) async {
     try {
       if (!isFetched || isRefresh) {
-        DocumentSnapshot value = await userCollection.getUserDocument(auth.currentUser!.uid.toString(),
-      );
-      userModel = UserModel.fromMap(value.data() as Map<String, dynamic>);
-      isFetched = true;
-      // CoustomLog.coustomLogData("getUser", userModel);
-      print("Requesting user Data from firebase database ");
-      return userModel;
+        DocumentSnapshot value = await userCollection.getUserDocument(
+          auth.currentUser!.uid.toString(),
+        );
+        userModel = UserModel.fromMap(value.data() as Map<String, dynamic>);
+        isFetched = true;
+        // CoustomLog.coustomLogData("getUser", userModel);
+        print("Requesting user Data from firebase database ");
+        return userModel;
       }
-       print("Requesting user Data from already present cashed ");
+      print("Requesting user Data from already present cashed ");
       // CoustomLog.coustomLogData("getUser", userModel);
       return userModel;
     } catch (error, stack) {
       CoustomLog.coustomLogError("getUser", error, stack);
+      rethrow;
+    }
+  }
+
+  initalizeUser(String uuid, data) async {
+    await statusCollection.setStatusDocument(uuid, data);
+    await bookmarkCollection.setBookmarkDocument(uuid, data);
+    await notificationCollection.setNotificationDocument(uuid, data);
+  }
+
+  @override
+  Future<bool> signeOutUser() async{
+    try {
+    await auth.signOut();
+    return true ;
+    } catch ( error, stack) {
+       CoustomLog.coustomLogError("signeOutUser", error, stack);
+      rethrow;
+    }
+    
+  }
+
+  @override
+  Future<bool> updateUserInformation(UserModel updatedUserInfo) async {
+    final userId = auth.currentUser!.uid;
+    try {
+      final imageUrl = await storage.uploadProfilepicFile(updatedUserInfo.profileImage.toString(), userId.toString());
+
+      final updatedUser = {
+      'uniqueName': updatedUserInfo.uniqueName,
+      'userName': updatedUserInfo.userName,
+      'email': updatedUserInfo.email,
+      'phoneNumber': updatedUserInfo.phoneNumber,
+      'updatedAt': DateTime.now().toString(),
+      'birthdate': updatedUserInfo.birthdate,
+      'profileImage': imageUrl,
+      };
+
+      await userCollection.updateUserDocument(userId.toString(), updatedUser);
+
+      CoustomLog.coustomLogData("updateUserInformation", updatedUser);
+      return true;
+    } catch (error, stack) {
+      CoustomLog.coustomLogError("updateUserInformation", error, stack);
       rethrow;
     }
   }

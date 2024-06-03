@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:instagram_clone/components/back_button_navbar.dart';
@@ -5,6 +7,8 @@ import 'package:instagram_clone/components/cards/chat_card.dart';
 import 'package:instagram_clone/src/Authantication/data/model/UserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
+import 'package:instagram_clone/src/ChatListScreen/data/model/UserMessageListModel.dart';
+import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserMessageListEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
 import 'package:instagram_clone/utils/screen_utils/screen_utils.dart';
 import 'package:instagram_clone/utils/theams/color_pallet.dart';
@@ -22,10 +26,14 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
 
 
   UserEntity userData =  UserModel();
+  late ChatListBloc _chatListBloc;
 
-    initialise(BuildContext context, bool refresh) async {
+
+  initialise(BuildContext context, bool refresh) async {
     userData = await context.read<AuthBloc>().getUserDetails(context, refresh);
     setState(() {});
+    final chatList = [...userData.following!, ...userData.followers!].toSet().toList();
+    context.read<ChatListBloc>().getFriendsChattingUserListStreamEvent(context,chatList  ?? []);
   }
 
 
@@ -35,6 +43,23 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
     super.initState();
     initialise(context , false);
   }
+
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _chatListBloc = context.read<ChatListBloc>();
+        // _chatListBloc.state.userChatList = StreamController<List<UserMessageListEntity>>.broadcast();
+  }
+
+  @override
+  void dispose() {
+    // Close the stream without accessing the context.
+    // _chatListBloc.state.userChatList.close();
+    super.dispose();
+  }
+
+
+
 
 
 
@@ -82,8 +107,8 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
                     width: super.screenWidthPercentage(context, 100),
                     height: super.screenHeightPercentage(context, 70),
                     child: StreamBuilder(
-                      stream: context.read<ChatListBloc>().getFollowersStatusStreamEvent(context, userData.following ?? []),
-                      builder: (BuildContext context,AsyncSnapshot<List<UserEntity>> snapshot) {
+                      stream: context.read<ChatListBloc>().state.userChatList.stream,
+                      builder: (BuildContext context,AsyncSnapshot<List<UserMessageListEntity>> snapshot) {
 
                         if (snapshot.connectionState ==ConnectionState.waiting) {
                           return Center(
@@ -108,16 +133,16 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
                           final value = snapshot.data;
                           // print(value?.length);
                           return ListView.builder(
-                            itemCount: value!.length ?? 0,
+                            itemCount: value?.length ?? 0,
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
-                              final userData = value[index];
+                              final userData = value?[index];
                                return ChatCard(userData: userData,);
                             },
                           );
                         }
 
-                        // if (snapshot.hasError) {
+                   
                         return Container(
                             height: 500,
                             alignment: Alignment.center,
@@ -125,23 +150,10 @@ class _ChatListScreenState extends State<ChatListScreen> with ScreenUtils {
                                 snapshot.error.toString() ??
                                     "Some Error Occured",
                                 style: CoustomTextStyle.paragraph4));
-                        // }
+                  
                       },
                     ),
                   ),
-
-
-                      // child: ListView.separated(
-                      //   itemBuilder: (BuildContext context, int index) {
-                      //     return ChatCard();
-                      //   },
-                        // separatorBuilder: (BuildContext context, int index) {
-                        //   return const SizedBox(
-                        //     height: 1,
-                        //   );
-                        // },
-                      //   itemCount: 20,
-                      // ),
                       ),
                 ),
               )

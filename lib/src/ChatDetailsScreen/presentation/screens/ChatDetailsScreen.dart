@@ -1,13 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:instagram_clone/components/back_button_navbar.dart';
-import 'package:instagram_clone/components/message_card.dart';
+import 'package:instagram_clone/src/ChatDetailsScreen/presentation/widgets/message_card.dart';
 import 'package:instagram_clone/components/message_text_field.dart';
 import 'package:instagram_clone/components/user_avatar.dart';
 import 'package:instagram_clone/src/Authantication/data/model/HiveUserModel.dart';
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
+import 'package:instagram_clone/src/ChatDetailsScreen/presentation/widgets/upload_file_bottomsheet.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/model/UserChatMessageModel.dart';
+import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserChatMessageEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListEvents.dart';
 import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/screens/OtherUserProfileScreen.dart';
@@ -28,28 +32,50 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen>
     with ScreenUtils {
-  TextEditingController messageController =TextEditingController();
+
+  TextEditingController messageController = TextEditingController();
   final focusNode = FocusNode();
   String replyedTo = '';
   Box<HiveUserModel> userDataBase = Hive.box<HiveUserModel>('UserDataBase');
   late HiveUserModel? senderUser;
   final ScrollController _scrollController = ScrollController();
+  late ChatListBloc _chatListBloc;
 
   @override
   void initState() {
     super.initState();
     senderUser = userDataBase.get("User");
-    
+
+    if (widget.reciverUser.uuid! != senderUser!.uuid) {
+          context.read<ChatListBloc>().add(ViewedLastMessageEvent(
+          context: context,
+          senderId: HiveUserModel.toEntity(senderUser).uuid!,
+          reciverId: widget.reciverUser.uuid!,
+    ));
+    }
+
     context.read<ChatListBloc>().getUserConversationStreamListEvent(
         senderUser!.uuid!, widget.reciverUser.uuid!, context);
+  }
 
+
+     @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _chatListBloc = context.read<ChatListBloc>();
+    // _chatListBloc.state.chatStreamController = StreamController<List<UserChatMessageEntity>>.broadcast();
   }
 
   @override
+  void dispose() {
+    // _chatListBloc.state.chatStreamController.close();
+    super.dispose();
+  }
+
+ 
+
+  @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       backgroundColor: primaryShade50,
       body: SizedBox(
@@ -72,7 +98,9 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return const OtherUserProfileScreen();
+                            return OtherUserProfileScreen(
+                              uuid: widget.reciverUser.uuid!,
+                            );
                           }));
                         },
                         child: Row(
@@ -118,70 +146,78 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
 
                   Expanded(
                     child: StreamBuilder(
-                        stream: context
-                            .read<ChatListBloc>()
-                            .state
-                            .chatStreamController
-                            .stream,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: primaryShade500,
+                      stream: context
+                          .read<ChatListBloc>()
+                          .state
+                          .chatStreamController
+                          .stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: primaryShade500,
+                            ),
+                          );
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.active) {
+                          if (snapshot.data?.length == 0) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "No Chat Yet",
+                                style: CoustomTextStyle.paragraph4,
                               ),
                             );
                           }
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.active) {
-                            if (snapshot.data?.length == 0) {
-                              return Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "No Chat Yet",
-                                  style: CoustomTextStyle.paragraph4,
-                                ),
+                          final value = snapshot.data;
+
+                          return ListView.builder(
+                            padding: const EdgeInsets.only(left: 10),
+                            controller: _scrollController,
+                            scrollDirection: Axis.vertical,
+                            reverse: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              final messageData = value![index];
+
+                              if (messageData.messageViewed != true && messageData.uuid != senderUser!.uuid) {
+                                context.read<ChatListBloc>().add(
+                                    ViewedMessageEvent(
+                                        context: context,
+                                        senderId:
+                                            HiveUserModel.toEntity(senderUser)
+                                                .uuid!,
+                                        reciverId: widget.reciverUser.uuid!,
+                                        messageId: messageData.messageId!));
+                              }
+
+                              return MessageCard(
+                                onTapHandler: () {},
+                                selectedItem: 1,
+                                messageData: messageData,
+                                senderUser: messageData.uuid == senderUser!.uuid
+                                    ? true
+                                    : false,
+                                reciverUuid: widget.reciverUser.uuid!,
+                                senderUuid:
+                                    HiveUserModel.toEntity(senderUser).uuid!,
                               );
-                            }
+                            },
+                            itemCount: value?.length ?? 0,
+                          );
+                        }
 
-                            final value = snapshot.data;
-
-                            
-
-                            return ListView.builder(
-                              padding: const EdgeInsets.only(left: 10),
-                              controller: _scrollController,
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (BuildContext context, int index) {
-                                final messageData = value![index];
-
-                                if (messageData.messageViewed != true && messageData.uuid != senderUser!.uuid) {
-                                  context.read<ChatListBloc>().add(
-                                      ViewedMessageEvent(
-                                          context: context,
-                                          senderId:HiveUserModel.toEntity(senderUser) .uuid!,
-                                          reciverId: widget.reciverUser.uuid!,
-                                          messageId: messageData.messageId!));
-                                }
-
-                                return MessageCard(
-                                  onTapHandler: () {},
-                                  selectedItem: 1,
-                                  messageData: messageData,
-                                  senderUser:messageData.uuid == senderUser!.uuid? true: false,
-                                );
-                              },
-                              itemCount: value?.length ?? 0,
-                            );
-                          }
-
-                          return Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                  snapshot.error.toString() ??"Some Error Occured",
-                                  style: CoustomTextStyle.paragraph4));
-                        }),
+                        return Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                                snapshot.error.toString() ??
+                                    "Some Error Occured",
+                                style: CoustomTextStyle.paragraph4));
+                      },
+                    ),
                   ),
 
                   SizedBox(
@@ -197,7 +233,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                   getTextFieldValue: (value) {},
                   onSend: () {
                     final messageData = UserChatMessageModel(
-                      messageType:CustomUploadFileType.TextDocument.enumToString(),
+                      messageType:
+                          CustomUploadFileType.TextDocument.enumToString(),
                       message: messageController.text.toString(),
                       replyedToId: replyedTo,
                       createdAt: DateTime.now().toString(),
@@ -209,9 +246,19 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
                         reciver: widget.reciverUser,
                         messageData: messageData));
 
-                      messageController.clear();
+                    messageController.clear();
                   },
-                  onAttachFile: () {},
+                  onAttachFile: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return UploadFileBottomSheet(
+                          senderUser: HiveUserModel.toEntity(senderUser),
+                          reciverUser: widget.reciverUser,
+                        );
+                      },
+                    );
+                  },
                   showAttachFile: true,
                 ),
               ),
@@ -221,13 +268,4 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen>
       ),
     );
   }
-
-
-
 }
-
-
-
-
-
-

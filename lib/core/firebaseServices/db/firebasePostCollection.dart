@@ -18,9 +18,6 @@ class FirebasePostCollection extends FirebaseServiceProvider {
     return dataBase.collection('Post');
   }
 
-  // addressSubDatabasePath(pathid) {
-  //   return databasePath().doc(pathid).collection('Address');
-  // }
 
   Future setPostDocument(String postId ,post) async {
     return await databasePath().doc(postId).set(post);
@@ -29,6 +26,12 @@ class FirebasePostCollection extends FirebaseServiceProvider {
   Future updatePostDocument(pathid, post) async {
     return await databasePath().doc(pathid).update(post);
   }
+
+  Future deletPostDocument(pathid) async {
+    return await databasePath().doc(pathid).delete();
+  }
+
+  
 
   Future getPostrDocument(pathid) async {
     return await databasePath().doc(pathid).get();
@@ -86,16 +89,4 @@ class FirebasePostCollection extends FirebaseServiceProvider {
   }
 
 
-
-  // Future setUserAddressSubCollectionDocument(pathid, address) async {
-  //   return await addressSubDatabasePath(pathid).doc().set(address);
-  // }
-
-  //   Future getAllReplayToCommentDocument(String postId ,String commentId ,  ) async {
-  //   return await dataBase.collection('Post').doc(postId).collection("Comments").doc(commentId).collection("ReplayComments").where("replyedTo.commentId", isEqualTo: commentId).get();
-  // }
-
-  // Future  queryUserDocument( querryField , queryData) async {
-  //   return await databasePath().where(querryField, isEqualTo: queryData).get();
-  // }
 }

@@ -18,6 +18,13 @@ class UploadPostsUsecase implements UseCase<PostEntity?, UploadPostsParams> {
       PostEntity data = await reposatory.uploadPost(params);
 
       if (data != null) {
+         ListnersUtils.showFlushbarMessage(
+            "Post Uploaded Successfull",
+            successColor,
+            white,
+            "Success",
+            Icons.done,
+            context);
         Navigator.pushNamedAndRemoveUntil(context, RoutesName.mainSectionScreen, (route) => route.isFirst);
       }
       return data;

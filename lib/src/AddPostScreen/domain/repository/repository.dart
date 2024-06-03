@@ -9,19 +9,15 @@ import 'package:instagram_clone/src/Authantication/domain/entity/FollowEntity.da
 abstract interface class PostRepository {
 
 
- Future<PostEntity> uploadPost(PostEntity post);
+  Future<PostEntity> uploadPost(PostEntity post);
 
- Future<bool> uploadStatus(StatusEntity status);
-
-
-
-  // Future<List<StatusEntity>> getAllFollowersStatusInfo(List<FollowEntity> followers);
+  Future<bool> uploadStatus(StatusEntity status);
 
   Stream<List<UserStatusEntity>> getAllStatus(List<FollowEntity> followers);
 
   Future<bool> viewedStatus(ViewedStatusEntity isStatusViewed , String userId);
 
-//   Future<UserStatusEntity> getMyStatus();
+  Future<UserStatusEntity> getMyStatus();
 
 
 

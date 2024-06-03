@@ -39,7 +39,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
   Future<PostModel> uploadPost(PostModel post) async {
     try {
       final userId = auth.currentUser!.uid;
-      final imageUrl = await storage.uploadImage(
+      final imageUrl = await storage.uploadPostFile(
           post.postImage.toString(), post.postImageFileType, userId.toString());
 
       final postId = Uuid().v4();
@@ -80,8 +80,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     HiveUserModel? user = userDataBase.get("User");
     final statusId = Uuid().v4();
     try {
-      final imageUrl = await storage.uploadImage(status.statusImage.toString(),
-          status.statusDiscription, userData!.uuid.toString());
+      final imageUrl = await storage.uploadStatusFile(status.statusImage.toString(),status.statusImageFileType, user!.uuid.toString());
 
       final statusData = status.copyWith(
         statusId: statusId,
@@ -117,19 +116,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     }
   }
   
-  // @override
-  // Future<List<StatusModel>> getAllFollowersStatusInfo(List<FollowModel> followers)async {
 
-  //   try {
-  //     List<String> followingUserUuid =followers.map((followers) => followers.uuid.toString()).toList();
-  //     QuerySnapshot<Map<String, dynamic>> querySnapshotStream = await statusCollection .getAllFollowersStatusDocumentStream(followingUserUuid);
-  //     final statusList = await querySnapshotStream.docs.map((status) => StatusModel.fromMap(status.data())).toList();
-  //     return statusList;
-  //   } catch (error, stack) {
-  //     CoustomLog.coustomLogError("getAllFollowersStatus", error, stack);
-  //     rethrow;
-  //   }
-  // }
   
   @override
   Stream<List<UserStatusModel>> getAllStatus(List<FollowModel> followers) {
@@ -152,18 +139,18 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
   
 
 
-  // @override
-  // Future<UserStatusModel> getMyStatus() async {
-  //   final userId = auth.currentUser!.uid;
-  //  try {
-  //     final myStatus =  await statusCollection.getStatusDocument(userId);
-  //     final status = UserStatusModel.fromMap(myStatus.data() as Map<String,dynamic>);
-  //     CoustomLog.coustomLogData("getMyStatus", status);
-  //     return status;
-  //  }  catch (error, stack) {
-  //     CoustomLog.coustomLogError("getMyStatus", error, stack);
-  //     rethrow ;
-  //   }
-  // }
+  @override
+  Future<UserStatusModel> getMyStatus() async {
+    final userId = auth.currentUser!.uid;
+   try {
+      final myStatus =  await statusCollection.getStatusDocument(userId);
+      final status = UserStatusModel.fromMap(myStatus.data() as Map<String,dynamic>);
+      CoustomLog.coustomLogData("getMyStatus", status);
+      return status;
+   }  catch (error, stack) {
+      CoustomLog.coustomLogError("getMyStatus", error, stack);
+      rethrow ;
+    }
+  }
 }
 

@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -12,26 +14,26 @@ class AuthState extends Equatable {
   UserEntity userModel ;
   CurrentAppState? currentState;
   // CurrentAppState? loadingState;
-  Stream<List<UserEntity>?>? userListStream ;
+  StreamController<List<UserEntity>> userListStream ;
 
 
   AuthState({ 
      required this.userModel,
     this.currentState,
-    this.userListStream ,
+     required this.userListStream ,
     // this.loadingState ,
       });
 
   AuthState copyWith({
     UserEntity? userModel,
     CurrentAppState? currentState,
-    // CurrentAppState? loadingState,
+    StreamController<List<UserEntity>>? userListStream 
   }) {
   
     return AuthState(
       userModel: userModel ?? this.userModel,
       currentState: currentState ?? this.currentState,
-      // loadingState: loadingState ?? this.loadingState,
+      userListStream: userListStream ?? this.userListStream,
     );
   }
 

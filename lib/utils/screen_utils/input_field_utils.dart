@@ -1,8 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:instagram_clone/utils/resources/enums.dart';
 import 'package:instagram_clone/utils/screen_utils/file_model.dart';
 
@@ -57,17 +57,8 @@ class InputFielUtils {
     return null;
   }
 
-
-  
-
-
-  
-
-
-
-
-
-  static Future<FileData?>  getMyFile( List<String> allowedExtension, FileType fileType , CustomUploadFileType uploadType) async {
+  static Future<FileData?> getMyFile(List<String> allowedExtension,
+      FileType fileType, CustomUploadFileType uploadType) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: fileType,
@@ -84,7 +75,8 @@ class InputFielUtils {
           print('File size: ${file.size}');
         }
 
-        return FileData(fileData: file as PlatformFile?, coustomfileType: uploadType) ;
+        return FileData(
+            fileData: file as PlatformFile?, coustomfileType: uploadType);
       } else {
         print('File picking canceled');
       }
@@ -93,7 +85,8 @@ class InputFielUtils {
     }
   }
 
-  static Future<PlatformFile?>  getALlMyFile( List<String> allowedExtension) async {
+  static Future<PlatformFile?> getALlMyFile(
+      List<String> allowedExtension) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowedExtensions: allowedExtension,
@@ -109,7 +102,7 @@ class InputFielUtils {
           print('File size: ${file.size}');
         }
 
-        return  file as PlatformFile? ;
+        return file as PlatformFile?;
       } else {
         print('File picking canceled');
       }
@@ -118,27 +111,48 @@ class InputFielUtils {
     }
   }
 
-  static Future<FileData?> pickImages(ImageSource source , CustomUploadFileType uploadType) async {
+  static Future<FileData?> pickImages(
+      ImageSource source, CustomUploadFileType uploadType) async {
     try {
       final imagePicker = ImagePicker();
 
       XFile? pickedFile = await imagePicker.pickImage(source: source);
       if (pickedFile != null) {
-         if (kDebugMode) {
+        if (kDebugMode) {
           print('File picked: ${pickedFile.name}');
           print('File path: ${pickedFile.path}');
         }
-        return FileData(coustomfileType: uploadType, fileData: pickedFile as XFile? );
-      }else {
+        return FileData(
+            coustomfileType: uploadType, fileData: pickedFile as XFile?);
+      } else {
         print('Image picking canceled');
       }
     } catch (e) {
       print('Image picker error: $e');
     }
   }
+
+  static void openFileFromUrl(String fileUri, context) async {
+    print(fileUri.split("_").last.toString());
+
+
+    try {
+      FileDownloader.downloadFile(
+          url: fileUri,
+          name: fileUri.split("_").last.toString(), //(optional)
+          onProgress: (fileName, progress) {
+
+          },
+          downloadDestination: DownloadDestinations.publicDownloads,
+          onDownloadCompleted: (String path) async{
+            print('FILE DOWNLOADED TO PATH: $path');
+          },
+          onDownloadError: (String error) {
+            print('DOWNLOAD ERROR: $error');
+            throw error ;
+          });
+    } catch (e) {
+      print(e);
+    }
+  }
 }
-
-
-
-
- 

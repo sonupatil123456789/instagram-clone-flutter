@@ -14,4 +14,8 @@ abstract interface class AuthRepository {
   void resetPassword(String email);
 
   void isUserOnline(bool isOnline);
+
+  Future<bool> signeOutUser();
+  
+  Future<bool> updateUserInformation(UserEntity updatedUserInfo);
 }

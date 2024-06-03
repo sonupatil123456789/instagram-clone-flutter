@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/utils/resources/Image_resources.dart';
 
 class UserAvatar extends StatelessWidget {
   double imageSize;
@@ -19,8 +20,8 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onPress();
+      onTap: () async {
+       await onPress();
       },
       onLongPress: () {
        if (onLongPress != null) {
@@ -40,6 +41,14 @@ class UserAvatar extends StatelessWidget {
             height: imageSize,
             width: imageSize,
             fit: BoxFit.cover,
+            errorListener: (value) {
+              print("error in image ${value.toString()}");
+            },
+            placeholder: (context, url) {
+              return Image.asset(ImageResources.localUserOne);
+              
+            },
+            errorWidget: (context, url, error) => Image.asset(ImageResources.localUserOne)
           ),
         ),
       ),

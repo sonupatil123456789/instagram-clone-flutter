@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:instagram_clone/core/firebaseServices/db/firebaseBookmarkCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebaseChatCollection.dart';
+import 'package:instagram_clone/core/firebaseServices/db/firebaseNotificationCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebasePostCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebaseStatusCollection.dart';
 import 'package:instagram_clone/core/firebaseServices/db/firebaseUserCollection.dart';
@@ -10,6 +12,7 @@ import 'package:instagram_clone/src/AddPostScreen/data/data_sources/remote_data_
 import 'package:instagram_clone/src/AddPostScreen/data/model/PostModel.dart';
 import 'package:instagram_clone/src/AddPostScreen/data/repository_impl/repository_impl.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/use_cases/GetAllStatusUsecase.dart';
+import 'package:instagram_clone/src/AddPostScreen/domain/use_cases/GetMyStatusUsecase.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/use_cases/IsStatusViewed.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/use_cases/UploadPostsUsecase.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/use_cases/UploadStatusUsecase.dart';
@@ -24,13 +27,24 @@ import 'package:instagram_clone/src/Authantication/domain/use_cases/GetUserStrea
 import 'package:instagram_clone/src/Authantication/domain/use_cases/GetUserUsecase.dart';
 import 'package:instagram_clone/src/Authantication/domain/use_cases/IsUserOnline.dart';
 import 'package:instagram_clone/src/Authantication/domain/use_cases/LogInUsecase.dart';
+import 'package:instagram_clone/src/Authantication/domain/use_cases/LogOutUsecase.dart';
 import 'package:instagram_clone/src/Authantication/domain/use_cases/ResetPasswordUsecase.dart';
+import 'package:instagram_clone/src/Authantication/domain/use_cases/UpdateUserUsecase.dart';
 import 'package:instagram_clone/src/Authantication/presentation/bloc/AuthBloc.dart';
+import 'package:instagram_clone/src/BookmarkScreen/data/data_sources/remote_data_source_impl.dart';
+import 'package:instagram_clone/src/BookmarkScreen/data/repository_impl/repository_impl.dart';
+import 'package:instagram_clone/src/BookmarkScreen/domain/repository/repository.dart';
+import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/AddToBookmarkUsecase.dart';
+import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/DeletBookmarkUsecase.dart';
+import 'package:instagram_clone/src/BookmarkScreen/domain/use_cases/GetAllUsersBookmarkUsecase.dart';
+import 'package:instagram_clone/src/BookmarkScreen/presentation/bloc/BookmarkBloc.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/data_sources/remote_data_source_impl.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/repository_impl/repository_impl.dart';
+import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/DeletMessageUsecase.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/GetAllFriendsChattingUserStreamListUsecase.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/GetUserConversationStreamListUsecase.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/SendMessageUsecase.dart';
+import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/ViewedLastMessageUsecase.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/use_cases/ViewedMessageUsecase.dart';
 import 'package:instagram_clone/src/ChatListScreen/presentation/bloc/ChatListBloc.dart';
 import 'package:instagram_clone/src/DiscoverScreen/data/data_sources/remote_data_source_impl.dart';
@@ -48,12 +62,19 @@ import 'package:instagram_clone/src/HomeScreen/domain/use_cases/LikePostUsecase.
 import 'package:instagram_clone/src/HomeScreen/domain/use_cases/PostCommentReplyUsecase.dart';
 import 'package:instagram_clone/src/HomeScreen/presentation/bloc/HomeBloc.dart';
 import 'package:instagram_clone/src/MainSection/presentation/MainSection.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/data/data_sources/remote_data_source_impl.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/data/repository_impl/repository_impl.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/domain/use_cases/GetOtherUserDetailsStreamUsecase.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/domain/use_cases/GetOtherUserPostsUsecase.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/domain/use_cases/GetOthersUserDetailsUsecase.dart';
+import 'package:instagram_clone/src/OtherUserProfileScreen/presentation/bloc/OtherUserBloc.dart';
 import 'package:instagram_clone/src/ReelsScreen/data/data_sources/remote_data_source_impl.dart';
 import 'package:instagram_clone/src/ReelsScreen/data/repository_impl/repository_impl.dart';
 import 'package:instagram_clone/src/ReelsScreen/domain/use_cases/GetAllVideoPostUsecase.dart';
 import 'package:instagram_clone/src/ReelsScreen/presentation/bloc/ReelBloc.dart';
 import 'package:instagram_clone/src/UserProfileScreen/data/data_sources/remote_data_source_impl.dart';
 import 'package:instagram_clone/src/UserProfileScreen/data/repository_impl/repository_impl.dart';
+import 'package:instagram_clone/src/UserProfileScreen/domain/use_cases/DeletPostUsecase.dart';
 import 'package:instagram_clone/src/UserProfileScreen/domain/use_cases/GetMyPostUsecase.dart';
 import 'package:instagram_clone/src/UserProfileScreen/presentation/bloc/UserProfileBloc.dart';
 import 'package:instagram_clone/utils/routes/routes.dart';
@@ -81,11 +102,6 @@ class _ApplicationState extends State<Application> {
   }
 
   Stream<UserModel?> authanticateScreen() async* {
-    // data =
-    //     UserModel.fromMap(await SeassionManager.getObjectFromSharedPreferences(
-    //           "User",
-    //         ) ??
-    //         {});
     data = HiveUserModel.toEntity(userDataBase.get("User"));
     yield data;
   }
@@ -97,7 +113,10 @@ class _ApplicationState extends State<Application> {
     final firebasePostCollection = FirebasePostCollection();
     final firebaseStatusCollection = FirebaseStatusCollection();
     final firebaseChatCollection = FirebaseChatCollection();
+    final firebaseBookmarkCollection = FirebaseBookmarkCollection();
+    final firebaseNotificationCollection = FirebaseNotificationCollection();
     final postModel = PostModel();
+    final firebaseStorage = StorageBucket();
 
     return MultiBlocProvider(
       providers: [
@@ -107,42 +126,88 @@ class _ApplicationState extends State<Application> {
               createAcount: CreatAccountUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
               logIn: LoginUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
               resetPassword: ResetPasswordUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
               isonline: IsOnlineUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
               getStreamOfUserList: GetUserStreamListUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
               getUser: GetUserUsecase(
                 AuthRepositoryImpl(
                   RemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseStatusCollection),
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
+                  LocalDataSourceImpl(userDataBase),
+                ),
+              ),
+              logOut: LogOutUsecase(
+                AuthRepositoryImpl(
+                  RemoteDataSourceImpl(
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
+                  LocalDataSourceImpl(userDataBase),
+                ),
+              ),
+              updateUser: UpdateUserUsecase(
+                AuthRepositoryImpl(
+                  RemoteDataSourceImpl(
+                      firebaseCollection,
+                      userModel,
+                      firebaseStatusCollection,
+                      firebaseBookmarkCollection,
+                      firebaseNotificationCollection,firebaseStorage),
                   LocalDataSourceImpl(userDataBase),
                 ),
               ),
@@ -155,35 +220,33 @@ class _ApplicationState extends State<Application> {
               uploadPost: UploadPostsUsecase(
                 PostRepositoryImpl(
                   PostRemoteDataSourceImpl(firebasePostCollection, postModel,
-                      StorageBucket(), firebaseStatusCollection, data!),
+                      firebaseStorage, firebaseStatusCollection, data!),
                 ),
               ),
               uploadStatus: UploadStatusUsecase(
                 PostRepositoryImpl(
                   PostRemoteDataSourceImpl(firebasePostCollection, postModel,
-                      StorageBucket(), firebaseStatusCollection, data!),
+                      firebaseStorage, firebaseStatusCollection, data!),
                 ),
               ),
-
               isStatusViewed: IsStatusViewedUsecase(
                 PostRepositoryImpl(
                   PostRemoteDataSourceImpl(firebasePostCollection, postModel,
-                      StorageBucket(), firebaseStatusCollection, data!),
+                      firebaseStorage, firebaseStatusCollection, data!),
                 ),
               ),
               getAllStatus: GetAllStatusUsecase(
                 PostRepositoryImpl(
                   PostRemoteDataSourceImpl(firebasePostCollection, postModel,
-                      StorageBucket(), firebaseStatusCollection, data!),
+                      firebaseStorage, firebaseStatusCollection, data!),
                 ),
               ),
-
-              // getMyStatus: GetMyStatusUsecase(
-              //   PostRepositoryImpl(
-              //     PostRemoteDataSourceImpl(firebasePostCollection, postModel,
-              //         StorageBucket(), firebaseStatusCollection, data!),
-              //   ),
-              // ),
+              getMyStatus: GetMyStatusUsecase(
+                PostRepositoryImpl(
+                  PostRemoteDataSourceImpl(firebasePostCollection, postModel,
+                      firebaseStorage, firebaseStatusCollection, data!),
+                ),
+              ),
             );
           },
         ),
@@ -193,28 +256,41 @@ class _ApplicationState extends State<Application> {
               getFriendsChattingUserList:
                   GetAllFriendsChattingUserStreamListUsecase(
                 ChatListRepositoryImpl(
-                  ChatListRemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseChatCollection),
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
                 ),
               ),
               sendMessage: SendMessageUsecase(
                 ChatListRepositoryImpl(
-                  ChatListRemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseChatCollection),
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
                 ),
               ),
-               getUserConversationStreamList: GetUserConversationStreamListUsecase(
-                 ChatListRepositoryImpl(
-                  ChatListRemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseChatCollection),
+              getUserConversationStreamList:
+                  GetUserConversationStreamListUsecase(
+                ChatListRepositoryImpl(
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
                 ),
-               ), 
-               viewedMessage: ViewedMessageUsecase(
-                 ChatListRepositoryImpl(
-                  ChatListRemoteDataSourceImpl(
-                      firebaseCollection, userModel, firebaseChatCollection),
+              ),
+              viewedMessage: ViewedMessageUsecase(
+                ChatListRepositoryImpl(
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
                 ),
-               ),
+              ),
+              deletMessage: DeletMessageUsecase(
+                ChatListRepositoryImpl(
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
+                ),
+              ),
+              viewedLastMessage: ViewedLastMessageUsecase(
+                ChatListRepositoryImpl(
+                  ChatListRemoteDataSourceImpl(firebaseCollection, userModel,
+                      firebaseChatCollection, firebaseStorage),
+                ),
+              ),
             );
           },
         ),
@@ -229,8 +305,64 @@ class _ApplicationState extends State<Application> {
         ),
         BlocProvider(
           create: (BuildContext context) {
+            return BookmarkBloc(
+                deletBookmark: DeletBookmarkUsecase(
+                    BookmarkRepositoryImpl(BookmarkRemoteDataSourceImpl(
+                  postModel,
+                  firebaseBookmarkCollection,
+                ))),
+                addBookmark: AddToBookmarkUsecase(
+                    BookmarkRepositoryImpl(BookmarkRemoteDataSourceImpl(
+                  postModel,
+                  firebaseBookmarkCollection,
+                ))),
+                getAllUserBookmark: GetAllUsersBookmarkUsecase(
+                    BookmarkRepositoryImpl(BookmarkRemoteDataSourceImpl(
+                  postModel,
+                  firebaseBookmarkCollection,
+                ))));
+          },
+        ),
+        BlocProvider(
+          create: (BuildContext context) {
+            return OtherUserBloc(
+              getOtherUserDetailsStream: GetOtherUserDetailsStreamUsecase(
+                OtherUserRepositoryImpl(
+                  OtherUserRemoteDataSourceImpl(firebasePostCollection,
+                      postModel, firebaseCollection, userModel),
+                ),
+              ),
+              getOtherUserDetails: GetOtherUserDetailsUsecase(
+                OtherUserRepositoryImpl(
+                  OtherUserRemoteDataSourceImpl(firebasePostCollection,
+                      postModel, firebaseCollection, userModel),
+                ),
+              ),
+              getOtherUserPosts: GetOtherUserPostsUsecase(
+                OtherUserRepositoryImpl(
+                  OtherUserRemoteDataSourceImpl(firebasePostCollection,
+                      postModel, firebaseCollection, userModel),
+                ),
+              ),
+              followUser: FollowUserUsecase(
+                DiscoverRepositoryImpl(
+                  DiscoverRemoteDataSourceImpl(FirebaseUserCollection(),
+                      HiveUserModel.toEntity(userDataBase.get("User"))),
+                ),
+              ),
+            );
+          },
+        ),
+        BlocProvider(
+          create: (BuildContext context) {
             return UserProfileBloc(
               getMyPost: GetMyPostUsecase(
+                UserProfileScreenRepositoryImpl(
+                  UserProfileScreenRemoteDataSourceImpl(
+                      firebasePostCollection, postModel),
+                ),
+              ),
+              deletPost: DeletMyPostUsecase(
                 UserProfileScreenRepositoryImpl(
                   UserProfileScreenRemoteDataSourceImpl(
                       firebasePostCollection, postModel),
@@ -296,7 +428,7 @@ class _ApplicationState extends State<Application> {
         BlocProvider(
           create: (BuildContext context) {
             return DiscoverBloc(
-              uploadPost: FollowUserUsecase(
+              followUser: FollowUserUsecase(
                 DiscoverRepositoryImpl(
                   DiscoverRemoteDataSourceImpl(FirebaseUserCollection(),
                       HiveUserModel.toEntity(userDataBase.get("User"))),
@@ -307,8 +439,9 @@ class _ApplicationState extends State<Application> {
         )
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Instagram Clone ',
         onGenerateRoute: Routes.generateRoutes,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             useMaterial3: true,
             chipTheme: ChipThemeData(

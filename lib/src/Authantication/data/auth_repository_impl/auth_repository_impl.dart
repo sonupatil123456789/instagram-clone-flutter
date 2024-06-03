@@ -13,7 +13,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserEntity> logInWithEmailIdPassword(UserEntity user) async {
     try {
-      final data =  await remoteDataSource.logInWithEmailIdPassword(UserModel.fromEntity(user));
+      final data = await remoteDataSource
+          .logInWithEmailIdPassword(UserModel.fromEntity(user));
       await localDataSource.saveUserDataToHiveDatabase(data);
       return data;
     } catch (error) {
@@ -24,7 +25,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserEntity> creatAcountWithEmailIdPassword(UserEntity user) async {
     try {
-      final data =  await remoteDataSource.creatAcountWithEmailIdPassword(UserModel.fromEntity(user));
+      final data = await remoteDataSource
+          .creatAcountWithEmailIdPassword(UserModel.fromEntity(user));
       await localDataSource.saveUserDataToHiveDatabase(data);
       return data;
     } catch (error) {
@@ -51,16 +53,35 @@ class AuthRepositoryImpl implements AuthRepository {
   Stream<List<UserEntity>> getAllUserStreamList(String searchQuery) {
     return remoteDataSource.getAllUserStreamList(searchQuery);
   }
-  
+
   @override
-  Future<UserEntity> getUser(bool isRefresh) async{
+  Future<UserEntity> getUser(bool isRefresh) async {
     try {
-      final data =  await remoteDataSource.getUser(isRefresh);
+      final data = await remoteDataSource.getUser(isRefresh);
       await localDataSource.saveUserDataToHiveDatabase(data);
-      return data ;
+      return data;
     } catch (e) {
-        rethrow;
+      rethrow;
     }
-   
+  }
+
+  @override
+  Future<bool> signeOutUser() async {
+    try {
+      final isSigneOut = await remoteDataSource.signeOutUser();
+      if (isSigneOut == true) {
+        await localDataSource.deletDataFromHiveDatabase('User');
+        return true;
+      }
+      return false;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> updateUserInformation(UserEntity updatedUserInfo) async {
+    return await remoteDataSource
+        .updateUserInformation(UserModel.fromEntity(updatedUserInfo));
   }
 }

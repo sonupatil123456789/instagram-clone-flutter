@@ -14,7 +14,7 @@ class DiscoverRepositoryImpl implements DiscoverRepository{
 
 
   @override
-  Future<FollowModel> followUser(FollowEntity following) async {
+  Future<bool> followUser(FollowEntity following) async {
     return await discoverRemoteDataSource.followUser(FollowModel.fromEntity(following));
   }
 

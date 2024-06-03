@@ -8,6 +8,7 @@ import 'package:instagram_clone/src/AddPostScreen/data/model/UserStatusModel.dar
 import 'package:instagram_clone/src/AddPostScreen/data/model/ViewedStatusModel.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/PostEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/StatusEntity.dart';
+import 'package:instagram_clone/src/AddPostScreen/domain/entity/UserStatusEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/entity/ViewedStatusEntity.dart';
 import 'package:instagram_clone/src/AddPostScreen/domain/repository/repository.dart';
 import 'package:instagram_clone/src/Authantication/data/model/FollowModel.dart';
@@ -37,24 +38,16 @@ class PostRepositoryImpl implements PostRepository{
     return  await postRemoteDataSource.viewedStatus(ViewedStatusModel.fromEntity(isStatusViewed) , userId);
   }
 
-  // @override
-  // Future<List<StatusEntity>> getAllFollowersStatusInfo(List<FollowEntity> followers) async{
-  //   return  await postRemoteDataSource.getAllFollowersStatusInfo(followers.map((e) => FollowModel.fromEntity(e)).toList());
-  // }
 
   @override
   Stream<List<UserStatusModel>> getAllStatus(List<FollowEntity> followers) {
     return postRemoteDataSource.getAllStatus(followers.map((e) => FollowModel.fromEntity(e)).toList());
   }
   
-  // @override
-  // Future<bool> viewedStatus(bool isStatusViewed , String userId) async {
-  //   return await postRemoteDataSource.viewedStatus(isStatusViewed , userId);
-  // }
   
-  // @override
-  // Future<UserStatusEntity> getMyStatus() async{
-  //   return await postRemoteDataSource.getMyStatus();
-  // }
+  @override
+  Future<UserStatusEntity> getMyStatus() async{
+    return await postRemoteDataSource.getMyStatus();
+  }
   
 }

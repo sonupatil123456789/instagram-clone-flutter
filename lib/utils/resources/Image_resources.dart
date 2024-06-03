@@ -23,14 +23,20 @@ class ImageResources {
 
 
   static const String instagram = 'assets/images/svgassets/instagram.svg';
+  static const String audiovisual = 'assets/images/svgassets/audiovisual.svg';
   static const String instagramLogo = 'assets/images/pngassets/instagram.png';
 
 
   static const String circularRing = 'assets/images/pngassets/circularRing.png';
-    static const String trangle = 'assets/images/pngassets/trangle.png';
+  static const String trangle = 'assets/images/pngassets/trangle.png';
+  static const String profileLocked = 'assets/images/pngassets/lock.png';
 
 
-  static const String networkUserOne = 'https://plus.unsplash.com/premium_photo-1707988180195-c56006657514?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+  static const String networkUserOne = 'https://firebasestorage.googleapis.com/v0/b/instagramclone-d205f.appspot.com/o/dummy%2Fprofile.png?alt=media&token=a7099172-9a5a-418b-af07-4ad1b49fdd23';
+  static const String networkUserTwo = 'https://firebasestorage.googleapis.com/v0/b/instagramclone-d205f.appspot.com/o/dummy%2Fman.png?alt=media&token=b5f852a6-5780-4337-802b-65c2ad1c6cb9';
+  static const String localUserOne = 'assets/images/pngassets/profile.png';
+  static const String localUserTwo = 'assets/images/pngassets/man.png';
+  // static const String networkUserOne = 'https://plus.unsplash.com/premium_photo-1707988180195-c56006657514?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
 
 

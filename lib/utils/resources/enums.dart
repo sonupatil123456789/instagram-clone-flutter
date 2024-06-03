@@ -8,6 +8,12 @@ enum CurrentAppState{
   ERROR
 }
 
+
+enum FileDetailType{
+  POST,
+  MESSAGE,
+}
+
  enum LogLevel {
   info,
   warning,

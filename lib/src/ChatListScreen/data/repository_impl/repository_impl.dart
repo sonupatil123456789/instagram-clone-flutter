@@ -5,6 +5,7 @@ import 'package:instagram_clone/src/Authantication/domain/entity/FollowEntity.da
 import 'package:instagram_clone/src/Authantication/domain/entity/UserEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/data_sources/remote_data_source.dart';
 import 'package:instagram_clone/src/ChatListScreen/data/model/UserChatMessageModel.dart';
+import 'package:instagram_clone/src/ChatListScreen/data/model/UserMessageListModel.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/entity/UserChatMessageEntity.dart';
 import 'package:instagram_clone/src/ChatListScreen/domain/repository/repository.dart';
 
@@ -16,7 +17,7 @@ class ChatListRepositoryImpl implements ChatListRepository {
   ChatListRepositoryImpl(this.remoteDataSource, );
 
   @override
-  Stream<List<UserEntity>> getAllFriendsChattingStreamList(List<FollowEntity> following) {
+  Stream<List<UserMessageListModel>> getAllFriendsChattingStreamList(List<FollowEntity> following) {
    return remoteDataSource.getAllFriendsChattingStreamList(following.map((e) => FollowModel.fromEntity(e)).toList());
   }
 
@@ -37,6 +38,16 @@ class ChatListRepositoryImpl implements ChatListRepository {
   @override
   Future<void>  viewedMessage(String senderId, String reciverId, String messageId) {
     return remoteDataSource.viewedMessage(senderId, reciverId, messageId);
+  }
+  
+  @override
+  Future<void>  viewedLastMessage(String senderId, String reciverId) {
+    return remoteDataSource.viewedLastMessage(senderId, reciverId);
+  }
+  
+  @override
+  Future<bool> deletMessage(String senderId, String reciverId, String messageId) {
+    return remoteDataSource.deletMessage(senderId, reciverId, messageId);
   }
 
   
